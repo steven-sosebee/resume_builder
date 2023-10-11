@@ -1,0 +1,16 @@
+.primary-button {
+    border: var(--font-color) solid 1px;
+    border-radius: 5px;
+    padding: 5px;
+
+}
+
+.btn-form {
+    outline: solid var(--font-color) 1px;
+
+}
+
+.warning {
+    background-color: var(--warning-color);
+    color: var(--font-color);
+}

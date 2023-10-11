@@ -1,0 +1,135 @@
+@import url("./classes.css");
+
+:root{
+    --primary-color:#001247;
+    --primary-light-color: #1245BA;
+    --primary-dark-color: #000066;
+    --secondary-color: #000066;
+    --tertiary-color: #bfcfff;
+    --font-color: #FDF7FA;
+    --affirmative-color: #188814;
+    --negative-color: #881414;
+    --warning-color: #ec8917;
+
+}
+
+
+.inline {
+    display: inline-block;
+}
+
+
+a {
+    all:unset;
+    cursor: pointer;
+}
+
+.primary {
+    background-color: var(--primary-color);
+    color: var(--font-color);
+}
+
+.secondary {
+    background-color: var(--secondary-color);
+    color: var(--font-color);
+}
+
+.tertiary {
+    background-color: var(--tertiary-color);
+    color: var(--primary-color);
+}
+
+
+#root {
+    background-color: var(--primary-color);
+    color: var(--font-color);
+    /* margin-inline: 20px; */
+}
+
+#root * {
+    border-radius: 5px;
+}
+
+#content {
+    margin-inline: 20px;
+}
+
+/* reset styles */
+html {
+    height: 100vh;
+    margin:0;
+    box-sizing: border-box;
+}
+
+button {
+    all:unset;
+    outline: revert;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+body {
+    /* background-color: var(--primary-color); */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    
+
+}
+
+body>*{
+    flex-grow: 1;
+}
+
+/* Input styles */
+
+/* Dialog container styling */
+dialog {
+    position:fixed;
+    top: 50%;
+    margin:auto;
+    transition: 5s;
+    opacity: 0;
+    background-color: var(--accent-color);
+    color: var(--font-color);
+}
+
+dialog[open] {
+    opacity: 1;
+    animation: fadeIn .25s normal forwards;   
+}
+
+dialog.fade[open] {
+    animation: fadeOut .25s normal forwards;
+}
+
+dialog::backdrop {
+    transition: 2s;
+    background-color: rgba(50, 75, 100, .8);
+}
+
+ul {
+    all:unset;
+}
+li {
+    all:unset;
+}
+a {
+    all:unset;
+    cursor: pointer;
+}
+
+input {
+    all:unset;
+    background-color: var(--primary-color);
+    color: var(--font-color);
+    margin: 5px;
+    display: block;
+    padding:5px;
+}
+
+form {
+    margin: 5px;
+
+}
