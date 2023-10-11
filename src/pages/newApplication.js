@@ -1,34 +1,31 @@
 import { useEffect, useRef, useState } from "react";
-import { dbCall } from "../utils/api";
+import { ApiCall } from "../classes/api";
 import { createFormObject } from "../utils/utils";
+import { Form } from "../components/form";
+import { Input } from "../components/input";
+import { Button } from "../components/button";
+import { useFetch } from "../Hooks/useFetch";
+import { dbCall } from "../utils/api";
 
 export const NewApplication = () => {
-    const form = useRef();
+    const applicationForm = useRef();
     const submit = useRef();
     const [list, setList] = useState([]);
+    const applicationData = new ApiCall('ApplicationData');
+    const formData = new ApiCall('ApplicationData');
+    
     const callList = async () => {
-        const res = await dbCall(
-            {
-                class:'GetApplicationData',
-                action:'list'
-            },
-            {},
-            {},
-            'GET'
-        )
-        // console.log(res);
-        setList(res);
+        await applicationData.query();
+        console.log(applicationData.data);
+        setList(applicationData.data);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = new FormData(form.current, submit.current);
+        const formData = new FormData(applicationForm.current, submit.current);
         const formDataObj=createFormObject(formData);        
-        
-        console.log(form.current);
-        console.log(formData);
         console.log(formDataObj);
-
+        // const res = useFetch.handleSubmit('CreateApplicationData','submit',null , formDataObj)
         const res = await dbCall(
             {
                 class: 'CreateApplicationData',
@@ -43,27 +40,52 @@ export const NewApplication = () => {
             console.log('adding to list...');
             setList([...list, {...formDataObj, id:res["ID"][0]}])
         }
-        // callList();
-        // console.log(res);
     }
 
-    useEffect(()=>{callList()},[]);
+    const handleDelete = async (e, id, idx) => {
 
+        e.preventDefault();
+        
+        console.log(id);
+        console.log('deleting...')
+
+        applicationData.delete({},{id:id})
+        console.log(applicationData.data);
+        setList(current => [...current].filter((x,index)=>index!==idx));
+    }
+
+    useEffect( ()=>{
+        callList()        
+    },[]);
+    // console.log(list);
     return (
         <main>
-            <header>
-                <h1>New Application</h1>
-                <form ref={form} onSubmit={handleSubmit}>
+            <header className="test">
+                <h1 className="primary">New Application</h1>
+                <Form formName= {'applicationForm'} formClasses={'secondary'} formRef={applicationForm}>
+                    <label>Job Title</label><Input inputName={'title'} inputId={'title'} inputType={'text'} />
+                    <label>Company</label><Input inputName={'company'} inputId={'company'} inputType={'text'}/>
+                    <label>Link</label><Input inputName={'link'} inputId={'link'} inputType={'text'}/>
+                    <br></br>
+                    <Button buttonStyle={'primary btn-form'} buttonText={'Continue'} buttonId={'submit'} buttonRef={submit} buttonClick={handleSubmit}/> 
+                </Form>
+                
+                {/* <form ref={form} onSubmit={handleSubmit} className="secondary">
                     <label>Job Title</label><input name={'title'} datatype="text"/>
                     <label>Company</label><input name={'company'} datatype="text"/>
                     <label> Link</label><input name={'link'} datatype="text"/>
-                    <button ref={submit} onClick={handleSubmit}>Continue</button>
-                </form>
+                    <button ref={submit} onClick={handleSubmit} className="primary-button">Continue</button>
+                </form> */}
             </header>
-            <section>
-                {list?.map(application => (
-                    <a href={`/application/${application.id}`}>{application.title} - {application.id}</a>
-                ))}
+            <section className="tertiary">
+                <ul>
+                    {list.length >0 && list.map((application, idx) => (
+                        <li>
+                            <a href={`/application/${application.id}`}>{application.title} - {application.id}</a>
+                            <Button buttonStyle={'warning'} buttonText={'X'} buttonId={application.id} buttonClick={(e)=>{handleDelete(e,application.id, idx)}}/>
+                        </li>
+                    ))}
+                </ul>
             </section>
         </main>
     )

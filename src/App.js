@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import "./styles/main.css";
 import { dbCall } from './utils/api';
 import Resume from './classes/resume';
 import { NewResume } from './components/resumeNew';
@@ -9,6 +10,9 @@ import { NewApplication } from './pages/newApplication';
 import { ApplicationPage } from './pages/application';
 import { ApplicationList } from './pages/applicationList';
 import { Header } from './components/header';
+import { CoverLetter } from './pages/coverLetter';
+import { Content } from './components/content';
+import { Test } from './pages/testing';
 
 function App() {
   const api = async () => {
@@ -19,6 +23,9 @@ function App() {
 
 const arrRoutes = [
   {
+    path:'/',
+    element:<h1>Welcome to the resume builder</h1>
+  },{
     path: '/resume',
     element: <ResumeComponent/>
   },
@@ -41,16 +48,26 @@ const arrRoutes = [
   {
     path:'/application/list',
     element:<ApplicationList/>
+  },
+  {
+    path:'/coverletter/new',
+    element:<CoverLetter/>
+  },
+  {
+    path:'/test',
+    element:<Test/>
   }
 ]
   return (
     <Router>
       <Header/>
-      <Routes>
+      <Content>
+        <Routes>
         {arrRoutes.map((route) => (
           <Route path={route.path} element={route.element}/>
         ))}
-      </Routes>    
+      </Routes>
+      </Content>    
     </Router>
   );
 }

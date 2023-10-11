@@ -7,9 +7,12 @@ export const CoverLetterActions = (jobId) => {
     const submit = useRef();
     const [pageData, setData] = useState();
     const handleDelete = useCallback(async (e,id)=> {
-        const res = await dbCall({class:'DeleteCoverLetterData',action:'delete'},id,{},"DELETE");
-        console.log(res);
-        
+        const res = await dbCall({class:'DeleteCoverLetterData',action:'delete'},{id:id},{},"DELETE");
+        // console.log(res);
+        if(res["rows deleted"]>0){
+            console.log('removing to list...');
+            setData({...pageData, list:[...pageData.list.filter(element => element.id !==id)]})
+        }
     })
     const handleData = async () => {
         
@@ -55,12 +58,12 @@ export const CoverLetterActions = (jobId) => {
             <form ref={form} onSubmit={handleSubmit}>
                 <label>Topic:</label><input name="topic" datatype="text"></input>
                 <label>Type:</label><input name="type" datatype="text"></input>
-                <label>Segment:</label><input name="segment" datatype="memo"></input>
+                <label>Segment:</label><textarea name="segment" rows={5} autoCorrect="true"></textarea>
                 <button ref={submit} onClick={handleSubmit}>Submit</button>
             </form>
             <form>
                 {pageData?.list.map(segment => (
-                    <div key={segment.id}><input type="checkbox"></input><input name="delete" type="button" onClick={()=> {handleDelete(segment.id)}}>X</input><label>{segment.segment}</label></div>
+                    <div key={segment.id}><input type="checkbox"></input><input name="delete" value="Delete" type="button" onClick={(e)=> {handleDelete(e, segment.id)}}/><label>{segment.segment}</label></div>
                 ))}
             </form>
         </section>
