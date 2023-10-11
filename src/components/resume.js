@@ -8,7 +8,7 @@ export const ResumeComponent = ({props}) => {
     const [loading, setLoading] = useState(false);
     let [data, setData] = useState();
     const handleData = async () => {
-    if(typeof id ==='undefined'){id=0}
+    if(typeof id !=='undefined'){
 
         let data = {
             list: await new Resume().list(),
@@ -19,12 +19,13 @@ export const ResumeComponent = ({props}) => {
         console.log(data);
         setData(data);
         setLoading(true);
-    }
+    }}
+    
     useEffect(()=>{
         handleData();
     },[])
     function Header (){
-        if (!id) { return (<h1>Choose a Resume</h1>)}
+        if (typeof id === 'undefined') { return (<h1>Choose a Resume</h1>)}
         if (!loading) {return (<h1>Loading</h1>)}
     }
     

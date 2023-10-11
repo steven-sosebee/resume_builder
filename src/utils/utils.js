@@ -6,3 +6,7 @@ export const createFormObject =(form)=>{
     };
     return createFormObject;
 }
+
+export const isObjEmpty=(obj)=>{
+    return Object.keys(obj).length===0;
+};
