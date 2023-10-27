@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { isObjEmpty } from "../utils/utils";
+import { useArray } from "./useArray";
 
 export const useFetch =(apiClass) => {
-    const [data, setData] = useState(null);
+    const data = useArray(null);
+    // const [data, setData] = useState(null);
     const [status, setStatus] = useState(null);
-    const [loading, setLoading] = useState(null);
-    const defaultURL = "/__index.php?";
+    const [loading, setLoading] = useState(false);
+    const defaultURL = "/index.php?";
     let params={};    
     let url= null;
 
@@ -16,7 +18,7 @@ export const useFetch =(apiClass) => {
     const MESSAGES = {
         loading: <div>Data Loading</div>,
         success: <div>Success...</div>,
-        failure: <div>An error occurrec...</div>
+        failure: <div>An error occurred...</div>
     };
 
     const ACTIONS = {
@@ -28,7 +30,7 @@ export const useFetch =(apiClass) => {
 
 
     const clearData = () => {
-        setData([]);
+        data.setOutput([]);
     }
 
     const getData = () => {
@@ -36,7 +38,7 @@ export const useFetch =(apiClass) => {
     }
 
     const constructCall = (searchParams={}) => {
-        setLoading(true);
+        
         url = defaultURL;
         let searchQuery = new URLSearchParams();
         searchParams.class = `${apiClass}`;
@@ -45,22 +47,34 @@ export const useFetch =(apiClass) => {
         });
         url = url + searchQuery;
     }
-    const handleCall = async () => {
-        setData([]);
+
+    const executeCall = async () => {
+        setStatus(()=>null)
         try{
             const res = await fetch(url, params);
-            const data = await res.json();
-            // console.log(res);
-            // console.log(data.data.output);
+            const resJSON = await res.json();
+            if(res.status !==200 || res.ok !==true){
+                setStatus(()=>MESSAGES.failure)
+                return
+            }
+            setStatus(()=>MESSAGES.success);            
+        }
+        catch(error){
+            setStatus(()=>MESSAGES.failure);
+        }
+    };
+
+    const handleCall = async () => {
+        try{
+            const res = await fetch(url, params);
+            const resJSON = await res.json();
             setLoading(false);
             if(res.status !==200 || res.ok !==true){
-                // console.log(res.status, res.ok);
-                // console.log('an error occurred...');
                 setStatus(()=>MESSAGES.failure)
                 return
             }
             setStatus(()=>MESSAGES.success);
-            setData(()=>data.data.output);
+            data.setOutput(resJSON.data.output);    
         }
         catch(error){
             setLoading(false);
@@ -77,20 +91,11 @@ export const useFetch =(apiClass) => {
     };
 
     const handleQuery = async (searchParams={}) =>{
-        // setLoading('Loading...')
-        // url = defaultURL;
         params.method = 'GET';
-        // let searchQuery = new URLSearchParams();
-        // searchParams.class = `${apiClass}`;
         searchParams.action = 'list';
-        // Object.entries(searchParams).forEach(([key,value])=>{    
-            // searchQuery.append(key, value.toString())
-        // });
-        // url = url + searchQuery;
+        setLoading(true);
         constructCall(searchParams);
         const res = await handleCall();
-        // return res;
-        // setData(() => res);
     }
     const handleSelect = async (searchParams={}) =>{
         // url = defaultURL;
@@ -102,6 +107,7 @@ export const useFetch =(apiClass) => {
             // searchQuery.append(key, value.toString())
         // });
         // url = url + searchQuery;
+        setLoading(true);
         constructCall(searchParams);
         const res = await handleCall();
         // return res;
@@ -110,39 +116,22 @@ export const useFetch =(apiClass) => {
     }
 
     const handleSubmit = async (body,searchParams={}) => {
-        // url = defaultURL;
-        
-        // if (isObjEmpty(body)) {return}
         params.body=JSON.stringify(body)
         params.method = 'POST';
-        // let searchQuery = new URLSearchParams();
-        // searchParams.class = `${apiClass}`;
         searchParams.action = 'submit';
-        // Object.entries(searchParams).forEach(([key,value])=>{    
-        //     searchQuery.append(key, value.toString())
-        // });
-        // url = url + searchQuery;
+        setLoading(true);
         constructCall(searchParams) 
         const res = await handleCall();
-        // setData(()=>res);
     };   
 
     const handleDelete = async (body,searchParams={}) => {
-        // let searchQuery = new URLSearchParams();
-        // url = defaultURL;
-        // if (!isObjEmpty(body)) {return}
         params.body=JSON.stringify(body)
         params.method = 'POST';
-        // searchParams.class = `${apiClass}`;
         searchParams.action = 'delete';
-        // Object.entries(searchParams).forEach(([key,value])=>{    
-        //     searchQuery.append(key, value.toString())
-        // });
-        console.log('delete')
+        console.log('delete', params);
         constructCall(searchParams);
-        const res = await handleCall();
-        // setData(()=>res);
+        const res = await executeCall();
     };
 
     return {handleQuery, handleSelect, clearData, handleSubmit, handleDelete, getData, data, status, loading, loadingMessage}
-};
+};  

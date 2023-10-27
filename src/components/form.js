@@ -1,43 +1,69 @@
-import { Button } from "./button";
-import { Input } from "./input";
-export const Form = ({ formName, formClasses, formRef, children }) => {
+// import { useReducer, useRef } from "react";
+// import { Button } from "./button";
+// import { Input } from "./input";
+import { useFetch } from "../Hooks/useFetch";
+// import { createFormObject } from "../utils/utils";
+// import { buttonActions } from "../data/buttonActions";
+
+export const Form = ({ formName, formClasses, formRef, formDataType, children, formButtons=[] }) => {
+  // const data = useFetch(formDataType);
+  // const formRefs = useRef();
+
+  // const testing = ()=> {
+  //   console.log('this is done from outside the component')
+  //   console.log(formRef);
+  // };
+
+  // const reducerMethod = (state, action) => {
+  //   switch (action.type) {
+  //       case 'add': {
+  //         console.log('TODO add submit code');
+  //         console.log(action.data);
+  //         data.handleSubmit(action.data);
+  //         break;
+  //       };
+        
+  //       case 'delete': {
+  //         console.log('TODO add delete code');
+  //         break;
+  //       };
+  //   }
+  // };
+
+  // const [state, dispatch] = useReducer(reducerMethod);
+  
+  
+  // const getFormData =()=> {
+  //   const formData = new FormData(formRef.current);
+  //   const formDataObj=createFormObject(formData);
+  //   return formDataObj;
+  // }
+  // const handleAdd = (e) => {
+    
+  //   dispatch({
+  //     type:'add',
+  //     data: formDataObj
+  //   })
+  // };
+
+  // const handleSubmit =(e, action) => {
+  //   e.preventDefault();
+  //   // const data = getFormData();
+  //   dispatch({
+  //     type:action,
+  //     data:data
+  //   })
+  // };
+
   const handleValidations=(callback)=>{
-    callback();
+    
   }
+
   return (
     <form name={formName} id={formName} ref={formRef} className={formClasses}>
         {children}
+        {/* <Button buttonClick={testing} buttonText={'testing'}/> */}
+        {/* <Button buttonClick={(e)=>handleSubmit(e,'add')} buttonText={'Add'}/> */}
     </form>
   )
-
-
-
-
-//   return (
-//     <form encType="multipart/form-data" id={formName} name={formName} className={formClasses}>
-//       <div className="form-main">
-//       <div className={`labels`}>
-//         {formInputs.map(label=>(
-//           <label key={`${formName}_${label.name}_label`} className={label.class} htmlFor={label.name}>
-//             {!label.label? label.name:label.label}
-//           </label>
-//         ))}
-//       </div>
-//       <div className={`inputs`}>
-//         {formInputs.map((item)=>{
-//           if(item.type==='select'){
-//             return <select key={`${formName}_${item.name}`} name={item.name} id={item.name} className={item.class}><option>High</option><option>Medium</option><option>Low</option></select>
-//         } else {
-//             return <input key={`${formName}_${item.name}`} name={item.name} id={item.name} className={item.class} type={item.type} placeholder={item.placeholder? item.placeholder:null} defaultValue={item.default? item.default:null}/>  
-//           }
-//         })}
-//       </div>
-//       </div>
-//       <div className={`buttons`}>
-//       {formButtons.map((button) => (
-//         <Button key={`${formName}_${button.button}`} buttonId={`${formName}_${button.button}`} buttonText={button.button} handleClick={button.function} styleClass={button.class} />
-//       ))}
-//       </div>
-//     </form>
-//   );
 };
