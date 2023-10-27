@@ -7,7 +7,7 @@ export const Content =({children}) => {
     }
     return (
         <main id="content">
-            <Toggle onChange={themeToggle}/>
+            {/* <Toggle onChange={themeToggle}/> */}
             {children}
         </main>
     )
