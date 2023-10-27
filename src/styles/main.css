@@ -1,5 +1,3 @@
-@import url("./classes.css");
-
 :root{
     --primary-color:#001247;
     --primary-light-color: #1245BA;
@@ -10,19 +8,21 @@
     --affirmative-color: #188814;
     --negative-color: #881414;
     --warning-color: #ec8917;
+    --action-color: #eeff00;
 
 }
-
 
 .inline {
     display: inline-block;
 }
 
-
-a {
-    all:unset;
-    cursor: pointer;
+* {
+    margin: 0;
+    padding: 0;
+    /* box-sizing: border-box; */
+    font-size: 14px;
 }
+
 
 .primary {
     background-color: var(--primary-color);
@@ -54,41 +54,13 @@ a {
     margin-inline: 20px;
 }
 
-/* reset styles */
-html {
-    height: 100vh;
-    margin:0;
-    box-sizing: border-box;
-}
-
-button {
-    all:unset;
-    outline: revert;
-    padding: 10px;
-    margin: 5px;
-    border-radius: 5px;
-}
-
-body {
-    /* background-color: var(--primary-color); */
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    
-
-}
-
-body>*{
-    flex-grow: 1;
-}
-
-/* Input styles */
-
 /* Dialog container styling */
 dialog {
+    /* width: 0;
+    height: 0; */
     position:fixed;
-    top: 50%;
-    margin:auto;
+    top: 50px;
+    margin-inline:auto;
     transition: 5s;
     opacity: 0;
     background-color: var(--accent-color);
@@ -96,6 +68,8 @@ dialog {
 }
 
 dialog[open] {
+    width: 90%;
+    height:90%;
     opacity: 1;
     animation: fadeIn .25s normal forwards;   
 }
@@ -105,31 +79,10 @@ dialog.fade[open] {
 }
 
 dialog::backdrop {
+    top:0;
+    left:0;
     transition: 2s;
     background-color: rgba(50, 75, 100, .8);
 }
 
-ul {
-    all:unset;
-}
-li {
-    all:unset;
-}
-a {
-    all:unset;
-    cursor: pointer;
-}
 
-input {
-    all:unset;
-    background-color: var(--primary-color);
-    color: var(--font-color);
-    margin: 5px;
-    display: block;
-    padding:5px;
-}
-
-form {
-    margin: 5px;
-
-}

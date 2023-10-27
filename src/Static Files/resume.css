@@ -1,0 +1,227 @@
+.centered {
+    margin-inline: auto;
+    display: inline-block;
+    width: max-content;
+}
+
+#title {
+    background-color: var(--primary-color);
+    color: var(--font-color);
+}
+.padding {
+    padding: 5px;
+}
+
+.bold {
+    font-weight: 900;
+}
+
+.flex {
+    display: flex;
+    flex-direction: row;
+
+}
+h3 {
+    border-bottom: var(--primary-color) solid 5px;
+}
+
+h4 {
+    background-color: aliceblue;
+    border-bottom: var(--primary-color) solid 2px;
+}
+
+* {
+    -webkit-print-color-adjust: exact;
+}
+h5 {
+    
+}
+.job {
+    break-inside: avoid;
+}
+.accomplishments li{
+    padding-left: 10px;
+    text-align: justify;
+    padding-bottom: 15px;
+}
+
+.accomplishments li::marker {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f105";
+}
+aside{
+    width: 35%;
+    background-color: rgb(212, 221, 221);
+    border-radius: 5px;
+}
+p {
+    padding-inline: 10px;
+    word-wrap: break-word;
+    text-align: justify;
+}
+#contacts {
+    word-wrap:break-word;
+    padding-left: 5px;
+
+    
+}
+
+main {
+    margin-inline: 10px;
+}
+:root{
+    --primary-color:#001247;
+    --primary-light-color: #1245BA;
+    --primary-dark-color: #000066;
+    --secondary-color: #000066;
+    --tertiary-color: #bfcfff;
+    --font-color: #FDF7FA;
+    --affirmative-color: #188814;
+    --negative-color: #881414;
+    --warning-color: #ec8917;
+
+}
+
+.inline {
+    display: inline-block;
+}
+
+
+a {
+    all:unset;
+    cursor: pointer;
+}
+
+.primary {
+    background-color: var(--primary-color);
+    color: var(--font-color);
+}
+
+.secondary {
+    background-color: var(--secondary-color);
+    color: var(--font-color);
+}
+
+.tertiary {
+    background-color: var(--tertiary-color);
+    color: var(--primary-color);
+}
+
+
+#root {
+    background-color: var(--primary-color);
+    color: var(--font-color);
+    /* margin-inline: 20px; */
+}
+
+#root * {
+    border-radius: 5px;
+}
+
+#content {
+    margin-inline: 20px;
+}
+
+/* reset styles */
+html {
+    height: 100vh;
+    margin:0;
+    box-sizing: border-box;
+}
+
+button {
+    all:unset;
+    outline: revert;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+body {
+    background-color: var(--font-color);
+    padding: 20px;
+    /* margin: .25in;
+    width: 8.25in;
+    height: 11.25in; */
+    /* display: flex;
+    flex-direction: column; */
+    
+
+}
+
+body>*{
+    flex-grow: 1;
+}
+
+/* Input styles */
+
+/* Dialog container styling */
+dialog {
+    position:fixed;
+    top: 50%;
+    margin:auto;
+    transition: 5s;
+    opacity: 0;
+    background-color: var(--accent-color);
+    color: var(--font-color);
+}
+
+dialog[open] {
+    opacity: 1;
+    animation: fadeIn .25s normal forwards;   
+}
+
+dialog.fade[open] {
+    animation: fadeOut .25s normal forwards;
+}
+
+dialog::backdrop {
+    transition: 2s;
+    background-color: rgba(50, 75, 100, .8);
+}
+
+ul {
+    list-style-type: none;
+}
+/* li {
+all: unset;
+} */
+
+.skills li{
+    padding-left: 10px;
+}
+.skills li::marker{
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f058";
+    /* content: url(https://fontawesome.com/icons/angle-right?f=classic&s=solid&an=beat); */
+}
+a {
+    all:unset;
+    cursor: pointer;
+}
+
+input {
+    all:unset;
+    background-color: var(--primary-color);
+    color: var(--font-color);
+    margin: 5px;
+    display: block;
+    padding:5px;
+}
+
+form {
+    margin: 5px;
+
+}

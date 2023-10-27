@@ -1,0 +1,34 @@
+.wrap {
+    word-wrap: break-word;
+}
+
+.dialog[open]{
+    height: fit-content;
+    background-color: var(--primary-color);
+    top:30%;
+}
+
+.flex {
+    display: flex;
+}
+
+.centered {
+    align-content: center;
+    justify-content: space-around;
+}
+
+.highlight {
+    border-bottom: 3px solid var(--secondary-color);
+
+}
+
+.bordered {
+    border: 2px solid;
+    padding:5px;
+    /* border-radius: 10px; */
+    margin: 5px;
+}
+
+.listItem {
+    padding:5px;
+}

@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import "./styles/main.css";
+import "./styles/index.css";
 import { dbCall } from './utils/api';
 import Resume from './classes/resume';
 import { NewResume } from './components/resumeNew';
@@ -13,6 +13,8 @@ import { Header } from './components/header';
 import { CoverLetter } from './pages/coverLetter';
 import { Content } from './components/content';
 import { Test } from './pages/testing';
+import { Main } from './pages/main/main';
+
 
 function App() {
   const api = async () => {
@@ -56,11 +58,16 @@ const arrRoutes = [
   {
     path:'/test',
     element:<Test/>
+  },
+  {
+    path:'/main',
+    element:<Main/>
   }
 ]
+
   return (
     <Router>
-      <Header/>
+      {/* <Header/> */}
       <Content>
         <Routes>
         {arrRoutes.map((route) => (

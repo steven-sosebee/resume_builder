@@ -14,3 +14,63 @@
     background-color: var(--warning-color);
     color: var(--font-color);
 }
+
+.negative {
+    background-color: var(--negative-color);
+    color:var(--font-color)
+}
+.action {
+    background-color: var(--action-color);
+    color:var(--primary-color)
+}
+
+.form-input {
+    background-color: var(--primary-color);
+    color: var(--font-color);
+    margin: 5px;
+    display: block;
+    padding:5px;
+}
+
+
+
+.btn-standard {
+    margin-inline: 10px;
+    padding: 5px;
+}
+
+.fixed {
+    display: inline-block;
+    width: 60%;
+}
+
+.hide {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.btn-sticky {
+    box-shadow: 
+    5px 5px 2px rgb(58, 58, 58),
+    -5px 5px 2px rgb(58, 58, 58);
+    text-align: center;
+    width: 50px;
+    height: 50px;
+    position:fixed;
+    margin: 0 0 20px 20px;
+}
+.block {
+    display: block;
+}
+.bottom {
+    bottom: 0;
+}
+
+.left {
+    left: 0;
+}
+
+.test {
+    width: 100%;
+}
