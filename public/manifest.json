@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Resume Builder",
+  "name": "Track applications and build resumes for each job",
   "icons": [
     {
       "src": "favicon.ico",
