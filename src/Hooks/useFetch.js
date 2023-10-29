@@ -7,7 +7,7 @@ export const useFetch =(apiClass) => {
     // const [data, setData] = useState(null);
     const [status, setStatus] = useState(null);
     const [loading, setLoading] = useState(false);
-    const defaultURL = "/API/index.php?";
+    const defaultURL = process.env.REACT_APP_URL;
     let params={};    
     let url= null;
 
