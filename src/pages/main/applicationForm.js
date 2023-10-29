@@ -23,10 +23,10 @@ export const ApplicationForm =({applications})=>{
         let newApplication = getFormData(dialogForm);
 
         await buttonActions.formSubmit(e, dialogForm, formSubmission);
-        console.log(formSubmission.data.output.ID);
+        console.log(formSubmission.data.output);
         
         newApplication= {...newApplication, id: formSubmission.data.output.ID}
-        // console.log(newApplication);
+        console.log(newApplication);
         // console.log(applications);
         applications.push(newApplication);
         resumeDialog.current.close();
