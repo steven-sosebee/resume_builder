@@ -1,0 +1,22 @@
+.primary-button {
+    border: var(--font-color) solid 1px;
+    border-radius: 5px;
+    padding: 5px;
+
+}
+
+.btn-standard {
+    margin-inline: 10px;
+    padding: 5px;
+}
+
+.btn-sticky {
+    box-shadow: 
+    5px 5px 2px rgb(58, 58, 58),
+    -5px 5px 2px rgb(58, 58, 58);
+    text-align: center;
+    width: 50px;
+    height: 50px;
+    position:fixed;
+    margin: 0 0 20px 20px;
+}

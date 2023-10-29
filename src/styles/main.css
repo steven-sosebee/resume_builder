@@ -12,33 +12,12 @@
 
 }
 
-.inline {
-    display: inline-block;
-}
-
 * {
     margin: 0;
     padding: 0;
     /* box-sizing: border-box; */
     font-size: 14px;
 }
-
-
-.primary {
-    background-color: var(--primary-color);
-    color: var(--font-color);
-}
-
-.secondary {
-    background-color: var(--secondary-color);
-    color: var(--font-color);
-}
-
-.tertiary {
-    background-color: var(--tertiary-color);
-    color: var(--primary-color);
-}
-
 
 #root {
     background-color: var(--primary-color);
