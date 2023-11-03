@@ -67,3 +67,11 @@
 .left {
     left: 0;
 }
+
+.inline-margin {
+    padding: 15px;
+}
+
+.x-75 {
+    width: 75%;
+}

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { Button } from "../components/button";
+import { ButtonClose } from "../components/Buttons/close";
 
 export const useDialog = () => {
     const [dialogState, setDialogState] = useState(false);
@@ -29,7 +30,7 @@ export const useDialog = () => {
     const Window =({children}) => {
         return (
             <dialog ref={dialogRef} className="dialog">
-                <Button buttonClick={close} buttonText={'Close'}/>
+                <ButtonClose buttonClick={close}/>
                 {children}
             </dialog>
         )

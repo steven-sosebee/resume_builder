@@ -6,7 +6,7 @@
 }
 
 .btn-standard {
-    margin-inline: 10px;
+    margin-inline: 5px;
     padding: 5px;
 }
 
@@ -19,4 +19,16 @@
     height: 50px;
     position:fixed;
     margin: 0 0 20px 20px;
+}
+
+.btn-dialog {
+    padding-top: 5px;
+
+}
+.btn-close {
+    color:var(--negative-color);
+    font-size: 20px;
+    border-radius: 50%;
+    text-shadow: -1px -1px 0 var(--font-color), 1px -1px 0 var(--font-color), -1px 1px 0 var(--font-color), 1px 1px 0 var(--font-color);
+    
 }

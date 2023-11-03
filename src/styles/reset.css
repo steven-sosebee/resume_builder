@@ -25,6 +25,7 @@ body {
 button {
     all:unset;
     appearance:none;
+    display: inline-block;
     margin:5px
 }
 
@@ -41,8 +42,7 @@ li {
 }
 
 input {
-    all:unset;
-    
+    all:unset;  
 }
 
 form {

@@ -3,7 +3,7 @@ import { isObjEmpty } from "../utils/utils";
 import { useArray } from "./useArray";
 
 export const useFetch =(apiClass) => {
-    const data = useArray(null);
+    const data = useArray([]);
     // const [data, setData] = useState(null);
     const [status, setStatus] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -20,14 +20,6 @@ export const useFetch =(apiClass) => {
         success: <div>Success...</div>,
         failure: <div>An error occurred...</div>
     };
-
-    const ACTIONS = {
-        delete: 'delete'
-    }
-    // const isObjEmpty=(obj)=>{
-    //     return Object.keys(obj).length===0;
-    // };
-
 
     const clearData = () => {
         data.setOutput([]);

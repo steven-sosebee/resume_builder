@@ -1,7 +1,8 @@
 export const Header = () => {
 
 
-    const navLinks = [
+    const navLinks = {
+      production: [
         {
           path:'/',
           text: "Home"
@@ -17,13 +18,20 @@ export const Header = () => {
           path:'/coverletter/new',
           text: "New Cover Letter"
         }
-      ]
+      ],
+      development:[
+       {
+        path:'/test',
+        text:'Testing'
+       } 
+      ]}
+      
     return (
         <header>
-            <nav className="inline">
-                <ul>
-                    {navLinks.map(navLink => (
-                        <li><a href={navLink.path}>{navLink.text}</a></li>
+            <nav >
+                <ul className="inline ">
+                    {navLinks[process.env.NODE_ENV].map(navLink => (
+                        <li className="inline inline-margin"><a href={navLink.path}>{navLink.text}</a></li>
                     ))}
                 </ul>
             </nav>

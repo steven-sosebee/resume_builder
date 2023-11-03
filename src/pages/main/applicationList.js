@@ -4,13 +4,12 @@ import { Button } from "../../components/button"
 import {buttonActions} from "../../data/buttonActions"
 import { useArray } from "../../Hooks/useArray"
 import { useDialog } from "../../Hooks/useDialog"
+import { ButtonActions } from "../../components/Buttons/actions"
 
-export const ApplicationList = ({applications, displayArea})=>{
-    // let applications = useArray(data.data);
+export const ApplicationList = ({applications})=>{
     const confirm = useRef();
-    const [confirmState, setConfirmState] = useState(false);
-    const [activeId, setActiveId] =useState();
-    // const [viewForm, setViewForm] = useState({title:'', company:'', link:''});
+    // const [confirmState, setConfirmState] = useState(false);
+    // const [activeId, setActiveId] =useState();
     let viewForm = {title:'', company:'', link:''};
     const view = useDialog();
     const editDialog = useDialog();
@@ -20,7 +19,7 @@ export const ApplicationList = ({applications, displayArea})=>{
         <view.Window>
             <h1>{view.dialogData.title}</h1>
             <h1>{view.dialogData.company}</h1>
-            <h1>{view.dialogData.link}</h1>
+            <h1><a target={"_blank"} href={view.dialogData.link}>Click Here</a></h1>
         </view.Window>
     );
     
@@ -52,24 +51,18 @@ export const ApplicationList = ({applications, displayArea})=>{
         const {id, title, company, link} = application;
         const api = useFetch('ApplicationData');
 
-
-        const handleDialogClose =()=> {
-            console.log(confirm.current.returnValue);
-        }
         return ( 
             <>
             {api.loading && api.loadingMessage}
             {!api.loading && 
                 <li draggable={true} className="highlight listItem" key={id} id={id}>
+                    <h6>{company}</h6>
                     <span className="hide fixed">{title}</span>
                     <Button buttonActive={!api.loading} buttonClick={(e)=>{view.setData(application);view.open()}} buttonIcon={"fa-solid fa-magnifying-glass"} buttonStyle={"btn-standard"}/>
                     <Button buttonActive={!api.loading} buttonClick={buttonActions.submit} buttonIcon={"fa-solid fa-pen"} buttonStyle={"action btn-standard"}/>
-                    <Button buttonActive={!api.loading} buttonClick={(e) => {
-                        deleteDialog.setData(application);deleteDialog.open()
-                        // setActiveId(application);
-                        // buttonActions.toggleDialog(e,confirmState,confirm,setConfirmState);
-                    }
-                        } buttonIcon={"fa-solid fa-trash"} buttonStyle={"negative btn-standard"}/>
+                    <Button buttonActive={!api.loading} buttonClick={(e) => {deleteDialog.setData(application);deleteDialog.open()}} buttonIcon={"fa-solid fa-trash"} buttonStyle={"negative btn-standard"}/>
+                    <ButtonActions/>
+                        
                 </li>}
             </>
         )}
