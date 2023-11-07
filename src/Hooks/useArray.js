@@ -23,7 +23,7 @@ export const useArray= (_array=[])=>{
     }
 
     const getElement = (fn) => {
-        return output.find((fn))
+        return output.includes(fn)
     };
 
     return {push, getElement, remove, insert, output,setOutput};

@@ -56,7 +56,7 @@ const arrRoutes = [
     element:<CoverLetter/>
   },
   {
-    path:'/test',
+    path:'/test/:resumeId',
     element:<Test/>
   },
   {
@@ -67,7 +67,7 @@ const arrRoutes = [
 
   return (
     <Router>
-      {/* <Header/> */}
+      <Header/>
       <Content>
         <Routes>
         {arrRoutes.map((route) => (

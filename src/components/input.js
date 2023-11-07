@@ -4,7 +4,7 @@ export const Input = ({inputName, inputId, inputType, inputClasses, min, max, in
         <input 
             name={inputName} 
             id={inputId} 
-            datatype={inputType} 
+            type={inputType} 
             className={inputClasses}
             min={min} 
             max={max} 
