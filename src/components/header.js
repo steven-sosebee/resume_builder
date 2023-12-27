@@ -4,26 +4,35 @@ export const Header = () => {
     const navLinks = {
       production: [
         {
-          path:'/',
-          text: "Home"
-        },{
-          path: '/resume',
-          text: "Resumes"
-        },
-        {
-          path:'/application/list',
-          text:"Applications"
-        },
-        {
-          path:'/coverletter/new',
-          text: "New Cover Letter"
-        }
+          path:'/templates',
+          text:'Resume Templates'
+         }
       ],
       development:[
        {
-        path:'/test/8',
+        path:'/test',
         text:'Testing'
-       } 
+       },
+       {
+        path:'/main',
+        text:'Applications'
+       },
+       {
+        path:'/resume/8/edit',
+        text:'Create Resume'
+       },
+       {
+        path:'/resume/template',
+        text:'Resume Template'
+       },
+       {
+        path:'/templates',
+        text:'Resume Templates'
+       },
+       {
+        path:"/testing/crypto",
+        text:"Crypto"
+       }
       ]}
       
     return (

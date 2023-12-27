@@ -1,69 +1,95 @@
 import logo from './logo.svg';
 import './App.css';
 import "./styles/index.css";
-import { dbCall } from './utils/api';
-import Resume from './classes/resume';
-import { NewResume } from './components/resumeNew';
+// import { dbCall } from '../_DELETE/api';
+// import Resume from './classes/resume';
+// import { NewResume } from '../_DELETE/resumeNew';
 import { BrowserRouter as Router,Route,NavLink, Routes } from 'react-router-dom';
-import { ResumeComponent } from './components/resume';
-import { NewApplication } from './pages/newApplication';
-import { ApplicationPage } from './pages/application';
-import { ApplicationList } from './pages/applicationList';
+// import { ResumeComponent } from './components/resume';
+// import { NewApplication } from '../_DELETE/newApplication';
+// import { ApplicationPage } from '../_DELETE/application';
+// import { ApplicationList } from '../_DELETE/applicationList';
 import { Header } from './components/header';
-import { CoverLetter } from './pages/coverLetter';
+// import { CoverLetter } from '../_DELETE/coverLetter';
 import { Content } from './components/content';
-import { Test } from './pages/testing';
-import { Main } from './pages/main/main';
-
+// import { Test } from '../_DELETE/delete_testing';
+// import { Main } from './pages/main/main';
+// import { ResumePage } from './pages/resume/resumePage';
+import { TestPage } from './pages/testing/testing';
+// import { ResumeTemplate } from './pages/resumeTemplate/resumeTemplate';
+import { ResumeTemplate } from './pages/resumeTemplate';
+import { Crypto } from './pages/testing/crypto';
+import { JobTemplate } from './pages/jobTemplate';
+import { Templates } from './pages/templates';
 
 function App() {
-  const api = async () => {
-    console.log('api call start');
-    const a = await new Resume().list();
-    console.log(a);
-}
-
-const arrRoutes = [
-  {
-    path:'/',
-    element:<h1>Welcome to the resume builder</h1>
-  },{
-    path: '/resume',
-    element: <ResumeComponent/>
-  },
-  {
-    path: 'resume/:id',
-    element: <ResumeComponent/>
-  },
-  {
-    path: '/resume/new',
-    element: <NewResume/>
-  },
-  {
-    path: '/application/new',
-    element: <NewApplication/>
-  },
-  {
-    path:'/application/:id',
-    element:<ApplicationPage/>
-  },
-  {
-    path:'/application/list',
-    element:<ApplicationList/>
-  },
-  {
-    path:'/coverletter/new',
-    element:<CoverLetter/>
-  },
-  {
-    path:'/test/:resumeId',
-    element:<Test/>
-  },
-  {
-    path:'/main',
-    element:<Main/>
-  }
-]
+  
+  const arrRoutes = [
+    {
+      path:'/',
+      element:<h1>Welcome to the resume builder</h1>
+    },
+    // {
+    //   path: '/resume',
+    //   element: <ResumeComponent/>
+    // },
+    // {
+    //   path: 'resume/:id',
+    //   element: <ResumeComponent/>
+    // },
+    // {
+    //   path: '/resume/new',
+    //   element: <NewResume/>
+    // },
+    // {
+    //   path: '/application/new',
+    //   element: <NewApplication/>
+    // },
+    // {
+    //   path:'/application/:id',
+    //   element:<ApplicationPage/>
+    // },
+    // {
+    //   path:'/application/list',
+    //   element:<ApplicationList/>
+    // },
+    // {
+    //   path:'/coverletter/new',
+    //   element:<CoverLetter/>
+    // },
+    // {
+    //   path:'/test',
+    //   element:<TestPage/>
+    // },
+    // {
+    //   path:'/main',
+    //   element:<Main/>
+    // },
+    // {
+    //   path:'/application/:applicationId/resume/edit',
+    //   element:<ResumePage/>
+    // },
+    // {
+    //   path:'/resume/template',
+    //   element:<ResumeTemplate/>
+    // },
+    {
+      path:'/templates',
+      element:<Templates/>
+    },
+    {
+      path:'/template/:id',
+      element:<ResumeTemplate/>
+    },
+    {
+      path:'/testing/crypto',
+      element:<Crypto/>
+    },
+    {
+      path:'/template/:id/:jobId',
+      element:<JobTemplate/>
+    }
+  ]
 
   return (
     <Router>
