@@ -12,7 +12,8 @@
 /src/pages/delete
 /src/pages/testing
 /src/Static Files/*
-
+/src/hooks/delete
+/src/hooks/testing
 # production
 /build
 
