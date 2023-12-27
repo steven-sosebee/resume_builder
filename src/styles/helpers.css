@@ -1,21 +1,7 @@
-.primary {
-    background-color: var(--primary-color);
-    color: var(--font-color);
-}
-
-.secondary {
-    background-color: var(--secondary-color);
-    color: var(--font-color);
-}
-
-.tertiary {
-    background-color: var(--tertiary-color);
-    color: var(--primary-color);
-}
-
 
 .wrap {
     word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 
@@ -72,6 +58,19 @@
     padding: 15px;
 }
 
+.font-200 {
+    font-size: 16px;
+}
 .x-75 {
     width: 75%;
+}
+
+.x-30 {
+    width: 30%;
+}
+.x-90 {
+    width:90%;
+}
+.padding {
+    height: 75px;
 }

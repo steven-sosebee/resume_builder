@@ -8,7 +8,7 @@
     --affirmative-color: #188814;
     --negative-color: #881414;
     --warning-color: #ec8917;
-    --action-color: #eeff00;
+    --action-color: #600f8f;
 
 }
 
@@ -16,7 +16,7 @@
     margin: 0;
     padding: 0;
     /* box-sizing: border-box; */
-    font-size: 14px;
+    font-size: 16px;
 }
 
 #root {

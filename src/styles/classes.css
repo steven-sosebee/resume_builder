@@ -1,16 +1,31 @@
+.primary {
+    background-color: var(--primary-color);
+    color: var(--font-color);
+}
+
+.secondary {
+    background-color: var(--secondary-color);
+    color: var(--font-color);
+}
+
+.tertiary {
+    background-color: var(--tertiary-color);
+    color: var(--primary-color);
+}
 
 .warning {
     background-color: var(--warning-color);
-    color: var(--font-color);
+    color: var(--primary-color);
 }
 
 .negative {
     background-color: var(--negative-color);
     color:var(--font-color)
 }
+
 .action {
     background-color: var(--action-color);
-    color:var(--primary-color)
+    color:var(--font-color)
 }
 
 .form-input {
@@ -19,4 +34,8 @@
     margin: 5px;
     display: block;
     padding:5px;
+}
+
+.anchor {
+    right:anchor(left);
 }
