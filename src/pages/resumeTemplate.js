@@ -11,8 +11,9 @@ export const ResumeTemplate = () => {
     const api = useFetch();
     const [pageData, setPageData] = useState({template:{},jobs:[]});
     const [jobs, setJobs] = useState([]);
-    const formRef = useRef();
-    const jobForm = useForm(formRef.current);
+    const formRef = useRef(null);
+    // const jobForm = useForm(formRef.current);
+    console.log(formRef);
 
     const initialize = async () => {
         
@@ -29,11 +30,13 @@ export const ResumeTemplate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let inputs = new FormData(formRef.current);
-
+        
+        const inputs = new FormData(formRef.current);
+        
+        
         inputs.append(":resumeId",id);
-
-        console.log(createFormObject(inputs));
+        // console.log(createFormObject(inputs));
+        console.log(inputs);
         const {data, res, status} = await api.execute({endpoint:"/api/resume/addjob", inputs:createFormObject(inputs)});
         
         if (status==200 && data.id>0){
@@ -42,7 +45,7 @@ export const ResumeTemplate = () => {
             return
         };
         console.log(res);
-        window.alert(`There was an error: ${data}`);
+        // window.alert(`There was an error: ${data}`);
         
     }
 
