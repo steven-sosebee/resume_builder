@@ -21,8 +21,8 @@ export const JobTemplate = () => {
     const api = useFetch();
     const [pageData, setPageData] = useState({});
     const [activities, setActivities] = useState([]);
-    const formRef = useRef();
-    const activityForm = useForm(formRef.current);
+    const formRef = useRef(null);
+    // const activityForm = useForm(formRef.current);
     // console.log(id,jobId);
    
     const initialize = async () => {
@@ -49,7 +49,7 @@ export const JobTemplate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let inputs = new FormData(formRef.current);
+        const inputs = new FormData(formRef.current);
         inputs.append(":jobId",jobId);
 
         // console.log(activityForm.createFormObject(inputs));

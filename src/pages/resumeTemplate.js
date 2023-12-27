@@ -33,19 +33,19 @@ export const ResumeTemplate = () => {
         
         const inputs = new FormData(formRef.current);
         
-        console.log(formRef.current)
+        // console.log(formRef.current)
         inputs.append(":resumeId",id);
         // console.log(createFormObject(inputs));
-        console.log(inputs);
-        // const {data, res, status} = await api.execute({endpoint:"/api/resume/addjob", inputs:createFormObject(inputs)});
+        // console.log(inputs);
+        const {data, res, status} = await api.execute({endpoint:"/api/resume/addjob", inputs:createFormObject(inputs)});
         
-        // if (status==200 && data.id>0){
-        //     formRef.current.reset();
-        //     initialize();
-        //     return
-        // };
+        if (status==200 && data.id>0){
+            formRef.current.reset();
+            initialize();
+            return
+        };
         // console.log(res);
-        // window.alert(`There was an error: ${data}`);
+        window.alert(`There was an error...`);
         
     }
 
