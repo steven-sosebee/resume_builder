@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useFetch, criterion, orderBy } from "../Hooks/useFetch";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "../Hooks/useForm";
-import { isObjEmpty } from "../utils/utils";
+import { createFormObject, isObjEmpty } from "../utils/utils";
 import { ICONS } from "../data/iconClasses";
 
 // /testing/template/:id
@@ -29,17 +29,20 @@ export const ResumeTemplate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let inputs = jobForm.data();
+        let inputs = new FormData(formRef.current);
+
         inputs.append(":resumeId",id);
 
-        console.log(jobForm.createFormObject(inputs));
-        const {res, status} = await api.execute({endpoint:"/api/resume/addjob", inputs:jobForm.createFormObject(inputs)});
-        if (status==200){
+        console.log(createFormObject(inputs));
+        const {data, res, status} = await api.execute({endpoint:"/api/resume/addjob", inputs:createFormObject(inputs)});
+        
+        if (status==200 && data.id>0){
             formRef.current.reset();
             initialize();
             return
         };
-        window.alert(`There was an error: ${res.data}`);
+        console.log(res);
+        window.alert(`There was an error: ${data}`);
         
     }
 

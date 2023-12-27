@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useFetch, criterion, orderBy } from "../Hooks/useFetch";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "../Hooks/useForm";
-import { isObjEmpty } from "../utils/utils";
+import { createFormObject, isObjEmpty } from "../utils/utils";
 import { ICONS } from "../data/iconClasses";
 
 // /template/:id/:jobid
@@ -49,11 +49,11 @@ export const JobTemplate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let inputs = activityForm.data();
+        let inputs = new FormData(formRef.current);
         inputs.append(":jobId",jobId);
 
         // console.log(activityForm.createFormObject(inputs));
-        const {res, status} = await api.execute({endpoint:ENDPOINTS.linkActivity, inputs:activityForm.createFormObject(inputs)});
+        const {res, status} = await api.execute({endpoint:ENDPOINTS.linkActivity, inputs:createFormObject(inputs)});
         if (status==200){
             formRef.current.reset();
             initialize();
