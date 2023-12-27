@@ -8,6 +8,10 @@
 .env.*
 # testing
 /coverage
+/_DELETE
+/src/pages/delete
+/src/pages/testing
+/src/Static Files/*
 
 # production
 /build
