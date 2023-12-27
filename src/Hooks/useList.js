@@ -3,18 +3,24 @@ import { useArray } from "./useArray";
 import { useSet } from "./useSet";
 
 export const useList =() => {
+
     const [active, setActive] = useState(new Set());
-    const list = useArray();
+    const [maxActive, setMaxActive] = useState(100);
+    // const list = useArray();
     
     const activate = (item) => {
-        active.has(item)?
-            setActive(prev =>{ const current = new Set(prev); current.delete(item); return current}):
-            setActive(prev =>{ const current = new Set(prev); current.add(item); return current})
+        if(active.has(item)){
+            setActive(prev =>{ const current = new Set(prev); current.delete(item); return current});}
+        else {
+            if(active.size<maxActive){
+                setActive(prev =>{ const current = new Set(prev); current.add(item); return current})
+        }
+        }
     };
 
-    const UList = ({children}) => {
+    const UList = ({children, id}) => {
     return (
-        <ul>
+        <ul key={id}>
             {children}
         </ul>
     )}
@@ -25,6 +31,15 @@ export const useList =() => {
                 {children}
             </ol>
         )}
+    
+    const ListItem = ({children, ...props})=> {
 
-    return {OList, UList, activate, active, list}
+        return (
+            <li>
+                {children}
+            </li>
+        )
+    }
+
+    return {OList, UList, ListItem, activate, setActive, setMaxActive, active}
 }

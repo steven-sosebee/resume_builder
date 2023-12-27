@@ -8,5 +8,21 @@ export const createFormObject =(form)=>{
 }
 
 export const isObjEmpty=(obj)=>{
-    return Object.keys(obj).length===0;
+    for (const prop in obj) {
+        if (Object.hasOwn(obj, prop)) {
+          return false;
+        }
+      }
+    
+      return true;
 };
+
+export const groupBy = (array, field, obj) => {
+    if(!Array.isArray(array)){console.log('not array'); return}
+    array.forEach(element => {
+        // if(!obj[element[field]]){
+        if(!(element[field] in obj))
+            obj[element[field]]=[];
+        obj[element[field]].push(element);
+    })
+}
