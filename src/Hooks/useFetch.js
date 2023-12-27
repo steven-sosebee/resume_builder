@@ -7,7 +7,7 @@ import { isObjEmpty } from "../utils/utils";
 export const useFetch =() => {
     const defaultURL = process.env.REACT_APP_URL;
     const key = process.env.REACT_APP_KEY;
-
+    
     const execute = async ({criteria=[], inputs={}, ordered=[], endpoint=defaultURL}) => {
         let post={};
         try{
@@ -24,7 +24,7 @@ export const useFetch =() => {
 
             if (!isObjEmpty(query)){
                 const data_encode = btoa(JSON.stringify(query));                            
-                endpoint = endpoint + "?q=" + data_encode;
+                endpoint = endpoint + ".php?q=" + data_encode;
             }
             if (String(endpoint).length>2047){
                 return "message too long";
