@@ -4,6 +4,7 @@ export const ICONS = {
     edit: "fa-solid fa-pen-to-square",
     expand: "fa-solid fa-bars",
     save: "fa-solid fa-floppy-disk",
-    close: "fa-solid fa-sm fa-circle-xmark btn-close"
+    close: "fa-solid fa-sm fa-circle-xmark",
+    action: "fa-solid fa-bars"
 
 }

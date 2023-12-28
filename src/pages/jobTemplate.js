@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "../Hooks/useForm";
 import { createFormObject, isObjEmpty } from "../utils/utils";
 import { ICONS } from "../data/iconClasses";
+import { STYLES } from "../data/styleClasses";
 
 // /template/:id/:jobid
 const ENDPOINTS = {
@@ -75,12 +76,12 @@ export const JobTemplate = () => {
             <h1>Job Template: {pageData.title}</h1>
             <button onClick={backToResume}>Back to resume...</button>
             
-            <form onSubmit={handleSubmit} className={"secondary"} ref={formRef} id={"job"}>
+            <form onSubmit={handleSubmit} className={STYLES.form} ref={formRef} id={"job"}>
                 {/* <label htmlFor={":title"}>Title:</label><input className={"primary"} name=":title"/> */}
-                <label htmlFor={":description"} >Description:</label><input className={"primary"} name=":description"/>
+                <div className="height-padding"><label htmlFor={":description"} >Description:</label><input className={STYLES.input} name=":description"/></div>
                 {/* <label htmlFor={":start"} >Start Date:</label><input type={"date"} className={"primary"} name=":start"/> */}
                 {/* <label htmlFor={":end"} >End Data:</label><input type={"date"} className={"primary"} name=":end"/> */}
-                <button onClick={handleSubmit}>Submit</button>
+                <button className={"right block inline-margin rounded action height-padding"} onClick={handleSubmit}><i className={ICONS.add}></i></button>
             </form>
             <ul>
                 {activities.map(
@@ -92,14 +93,14 @@ export const JobTemplate = () => {
 }
 
 const Activity = ({updateData, activity}) => {
-    const statusClass = {
-        active: "action",
-        disabled: "disabled",
-        inactive:"secondary"
-    }
+    // const statusClass = {
+    //     active: "action",
+    //     disabled: "disabled",
+    //     inactive:"secondary"
+    // }
     
     const api = useFetch();
-    const [classState,setClass] = useState(statusClass.inactive);
+    const [classState,setClass] = useState(STYLES.inactive);
     const [active, setActive] = useState(false);
     const formRef = useRef();
     const form = useForm(formRef.current);
@@ -110,12 +111,12 @@ const Activity = ({updateData, activity}) => {
         e.preventDefault();
         const id = e.currentTarget.id;
         setActive(current => !current);
-        setClass(statusClass.active);
+        setClass(STYLES.active);
     };
 
     const handleDelete = async (e) => {
         e.preventDefault();
-        setClass(statusClass.disabled);
+        setClass(STYLES.disabled);
         console.log(e.currentTarget.id);
         const {res, status} = await api.execute({endpoint:ENDPOINTS.unlinkActivity,criteria:[[criterion("id","=",id)]]})
         updateData();   
@@ -137,7 +138,7 @@ const Activity = ({updateData, activity}) => {
     const handleFocus = (e) => {
         if (active && !e.currentTarget.contains(e.relatedTarget)) {   
             setActive(false);
-            setClass(statusClass.inactive);    
+            setClass(STYLES.inactive);    
             if(changed) {
                 handleUpdate();          
             }
@@ -155,11 +156,11 @@ const Activity = ({updateData, activity}) => {
         <li className={`secondary ${classState}`}>
             <form ref={formRef} id={"job"} onBlur={handleFocus}>
                 <textarea onChange={handleChange} disabled={disabled} className={`x-90 ${classState}`} name=":description" defaultValue={description}/>
-                <div className={""}>    
-                    <button className={""} id={id} value={"delete"} onClick={handleDelete}><i className={ICONS.delete}></i></button>
+                <div className="height-spacing flex flex-around action">    
+                    <button className={STYLES.formButton} id={id} value={"delete"} onClick={handleDelete}><i className={ICONS.delete}></i></button>
                     {active?
-                        <button id={id} value={"save"} onClick={handleSave}><i className={ICONS.save}></i></button> :    
-                        <button id={id} value={"edit"} onClick={handleEdit}><i className={ICONS.edit}></i></button>
+                        <button className={STYLES.formButton} id={id} value={"save"} onClick={handleSave}><i className={ICONS.save}></i></button> :    
+                        <button className={STYLES.formButton} id={id} value={"edit"} onClick={handleEdit}><i className={ICONS.edit}></i></button>
                     }
                 </div>
                 {/* <label htmlFor={":title"}>Title:</label> */}

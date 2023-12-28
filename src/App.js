@@ -21,6 +21,7 @@ import { ResumeTemplate } from './pages/resumeTemplate';
 import { Crypto } from './pages/testing/crypto';
 import { JobTemplate } from './pages/jobTemplate';
 import { Templates } from './pages/templates';
+import { FormTest } from './pages/formTest';
 
 function App() {
   
@@ -88,6 +89,10 @@ function App() {
     {
       path:'/template/:id/:jobId',
       element:<JobTemplate/>
+    },
+    {
+      path: '/testing/form',
+      element:<FormTest/>
     }
   ]
 

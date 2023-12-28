@@ -4,7 +4,12 @@ a {
 }
 
 a, button, input, select, option, textarea {
-    all:unset
+    all:unset;
+    border-radius: 5px;
+}
+
+input:focus, select:focus, option:focus, textarea:focus {
+    background-color: var(--active-color);
 }
 
 select, option {

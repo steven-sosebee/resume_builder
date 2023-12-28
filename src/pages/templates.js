@@ -4,6 +4,7 @@ import { useForm } from "../Hooks/useForm";
 import { ButtonActions } from "../components/Buttons/actions"
 import { Navigate, useNavigate } from "react-router-dom";
 import { ButtonDelete } from "../components/Buttons/delete";
+import { ICONS } from "../data/iconClasses";
 
 export const Templates = () => {
     const navigate = useNavigate();
@@ -47,19 +48,20 @@ export const Templates = () => {
 
     return (
         <content>
-            <p>Testing new API</p>
+            <p>Resume Templates</p>
             
-            <form onSubmit={(e)=>e.preventDefault()} id="template" ref={formRef}>
-                <label for={":template"}>Input new template name:</label><input className={'secondary'} name=":template"/>
+            <form className={"bordered secondary"} onSubmit={(e)=>e.preventDefault()} id="template" ref={formRef}>
+                <label for={":template"}>Create a new template:</label><input className={' block x-90 active'} name=":template"/>
+                <button className={"right inline-margin rounded action height-padding"} onClick={submitForm}><i className={ICONS.add}></i></button>
             </form>
-            <ButtonActions buttonClick={submitForm}/>
+            
 
             <ul>
                 {templates.map(template=>(
-                    <li>
+                    <li className="height-padding highlight">
                         <span>{template.template}</span>
-                        <button id={template.id} onClick={handleSelect}>Select</button>
-                        <ButtonDelete buttonClick={handleDelete} buttonId={template.id}/>
+                        <button className={"inline-margin"} onClick={handleSelect} id={template.id}><i className={ICONS.action}></i></button>
+                        <button className={"inline-margin"} onClick={handleDelete} id={template.id}><i className={ICONS.delete}></i></button>
                     </li>
                 ))}
             </ul>
