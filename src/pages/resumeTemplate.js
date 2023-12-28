@@ -39,7 +39,7 @@ export const ResumeTemplate = () => {
         // console.log(inputs);
         const {data, res, status} = await api.execute({endpoint:"/api/resume/addjob", inputs:createFormObject(inputs)});
         
-        if (status==200 && data.id>0){
+        if (status==200 && parseInt(data.ID)>0){
             formRef.current.reset();
             initialize();
             return

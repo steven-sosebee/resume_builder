@@ -53,8 +53,8 @@ export const JobTemplate = () => {
         inputs.append(":jobId",jobId);
 
         // console.log(activityForm.createFormObject(inputs));
-        const {res, status} = await api.execute({endpoint:ENDPOINTS.linkActivity, inputs:createFormObject(inputs)});
-        if (status==200){
+        const {data, res, status} = await api.execute({endpoint:ENDPOINTS.linkActivity, inputs:createFormObject(inputs)});
+        if (status==200 && parseInt(data.ID)>0){
             formRef.current.reset();
             initialize();
             return
