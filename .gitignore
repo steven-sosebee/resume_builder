@@ -15,6 +15,7 @@
 /src/Static Files/*
 /src/hooks/delete
 /src/hooks/testing
+/src/components/testing
 /scripts
 # production
 /build
