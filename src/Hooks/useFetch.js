@@ -10,6 +10,7 @@ export const useFetch =() => {
     
     const execute = async ({criteria=[], inputs={}, ordered=[], endpoint=defaultURL}) => {
         let post={};
+        const apiPrefix = (process.env.NODE_ENV=="production")? "/api" : "";
         try{
 
             const query = {
@@ -24,7 +25,7 @@ export const useFetch =() => {
 
             if (!isObjEmpty(query)){
                 const data_encode = btoa(JSON.stringify(query));                            
-                endpoint = endpoint + ".php?q=" + data_encode;
+                endpoint = apiPrefix + endpoint + ".php?q=" + data_encode;
             }
             if (String(endpoint).length>2047){
                 return "message too long";
@@ -34,10 +35,15 @@ export const useFetch =() => {
             if(res.status !==200 || res.ok !==true){
                 return {status: res.status};
             }
+            console.log(resJSON);
+            const e = String(resJSON.data).startsWith("SQLSTATE");
+            console.log(e);
+            if(e) {throw Error(resJSON.data)};
             return {data: resJSON.data, res: resJSON, status:res.status};            
         }
         catch(error){
-            return error;
+            window.alert(error);
+            return {status: 500};
         }
     }
     // source https://stackoverflow.com/questions/18279141/javascript-string-encryption-and-decryption

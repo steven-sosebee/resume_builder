@@ -21,87 +21,88 @@ import { ResumeTemplate } from './pages/resumeTemplate';
 import { Crypto } from './pages/testing/crypto';
 import { JobTemplate } from './pages/jobTemplate';
 import { Templates } from './pages/templates';
-import { FormTest } from './pages/formTest';
+import { FormTest } from './pages/testing/formTest';
+import { PAGES } from './data/pages';
 
 function App() {
   
-  const arrRoutes = [
-    {
-      path:'/',
-      element:<h1>Welcome to the resume builder</h1>
-    },
-    // {
-    //   path: '/resume',
-    //   element: <ResumeComponent/>
-    // },
-    // {
-    //   path: 'resume/:id',
-    //   element: <ResumeComponent/>
-    // },
-    // {
-    //   path: '/resume/new',
-    //   element: <NewResume/>
-    // },
-    // {
-    //   path: '/application/new',
-    //   element: <NewApplication/>
-    // },
-    // {
-    //   path:'/application/:id',
-    //   element:<ApplicationPage/>
-    // },
-    // {
-    //   path:'/application/list',
-    //   element:<ApplicationList/>
-    // },
-    // {
-    //   path:'/coverletter/new',
-    //   element:<CoverLetter/>
-    // },
-    // {
-    //   path:'/test',
-    //   element:<TestPage/>
-    // },
-    // {
-    //   path:'/main',
-    //   element:<Main/>
-    // },
-    // {
-    //   path:'/application/:applicationId/resume/edit',
-    //   element:<ResumePage/>
-    // },
-    // {
-    //   path:'/resume/template',
-    //   element:<ResumeTemplate/>
-    // },
-    {
-      path:'/templates',
-      element:<Templates/>
-    },
-    {
-      path:'/template/:id',
-      element:<ResumeTemplate/>
-    },
-    {
-      path:'/testing/crypto',
-      element:<Crypto/>
-    },
-    {
-      path:'/template/:id/:jobId',
-      element:<JobTemplate/>
-    },
-    {
-      path: '/testing/form',
-      element:<FormTest/>
-    }
-  ]
+  // const arrRoutes = [
+  //   {
+  //     path:'/',
+  //     element:<h1>Welcome to the resume builder</h1>
+  //   },
+  //   // {
+  //   //   path: '/resume',
+  //   //   element: <ResumeComponent/>
+  //   // },
+  //   // {
+  //   //   path: 'resume/:id',
+  //   //   element: <ResumeComponent/>
+  //   // },
+  //   // {
+  //   //   path: '/resume/new',
+  //   //   element: <NewResume/>
+  //   // },
+  //   // {
+  //   //   path: '/application/new',
+  //   //   element: <NewApplication/>
+  //   // },
+  //   // {
+  //   //   path:'/application/:id',
+  //   //   element:<ApplicationPage/>
+  //   // },
+  //   // {
+  //   //   path:'/application/list',
+  //   //   element:<ApplicationList/>
+  //   // },
+  //   // {
+  //   //   path:'/coverletter/new',
+  //   //   element:<CoverLetter/>
+  //   // },
+  //   // {
+  //   //   path:'/test',
+  //   //   element:<TestPage/>
+  //   // },
+  //   // {
+  //   //   path:'/main',
+  //   //   element:<Main/>
+  //   // },
+  //   // {
+  //   //   path:'/application/:applicationId/resume/edit',
+  //   //   element:<ResumePage/>
+  //   // },
+  //   // {
+  //   //   path:'/resume/template',
+  //   //   element:<ResumeTemplate/>
+  //   // },
+  //   {
+  //     path:'/templates',
+  //     element:<Templates/>
+  //   },
+  //   {
+  //     path:'/template/:id',
+  //     element:<ResumeTemplate/>
+  //   },
+  //   {
+  //     path:'/testing/crypto',
+  //     element:<Crypto/>
+  //   },
+  //   {
+  //     path:'/template/:id/:jobId',
+  //     element:<JobTemplate/>
+  //   },
+  //   {
+  //     path: '/testing/form',
+  //     element:<FormTest/>
+  //   }
+  // ]
 
   return (
     <Router>
       <Header/>
       <Content>
         <Routes>
-        {arrRoutes.map((route) => (
+        {PAGES.map((route) => (
           <Route path={route.path} element={route.element}/>
         ))}
       </Routes>

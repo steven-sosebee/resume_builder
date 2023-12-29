@@ -6,20 +6,28 @@ import { createFormObject, isObjEmpty } from "../utils/utils";
 import { ICONS } from "../data/iconClasses";
 import { STYLES } from "../data/styleClasses";
 
-// /testing/template/:id
+// //template/:id
+const ENDPOINTS = {
+    getResume: "/resume/read",
+    create: "/job/create",
+    delete: "/job/delete",
+    update: "/job/update",
+    getJobs:"/job/getresumejobs",
+    linkJob: "/resume/addjob"
+
+}
+
 export const ResumeTemplate = () => {
     const {id} = useParams();
     const api = useFetch();
     const [pageData, setPageData] = useState({template:{},jobs:[]});
     const [jobs, setJobs] = useState([]);
-    const formRef = useRef(null);
-    // const jobForm = useForm(formRef.current);
-    console.log(formRef);
+    const formRef = useRef(null);   
 
     const initialize = async () => {
         
-        const {data:apiTemplate, status:status_template} = await api.execute({endpoint:"/api/resume/select", criteria:[[criterion("id", "=", id)]]});
-        const {data:apiJobs, res, status:status_jobs} = await api.execute({endpoint:"/api/job/getresumejobs", ordered:[orderBy("end", false), orderBy("start", false)], criteria:[[criterion("resumeId", "=", id)]]});
+        const {data:apiTemplate, status:status_template} = await api.execute({endpoint:ENDPOINTS.getResume, criteria:[[criterion("id", "=", id)]]});
+        const {data:apiJobs, res, status:status_jobs} = await api.execute({endpoint:ENDPOINTS.getJobs, ordered:[orderBy("end", false), orderBy("start", false)], criteria:[[criterion("resumeId", "=", id)]]});
         setPageData(()=>(apiTemplate[0]));
         setJobs(()=>(apiJobs));
         console.log(res);
@@ -38,19 +46,17 @@ export const ResumeTemplate = () => {
         inputs.append(":resumeId",id);
         // console.log(createFormObject(inputs));
         // console.log(inputs);
-        const {data, res, status} = await api.execute({endpoint:"/api/resume/addjob", inputs:createFormObject(inputs)});
-        
-        if (status==200 && parseInt(data.ID)>0){
+        const {data, res, status} = await api.execute({endpoint:ENDPOINTS.linkJob, inputs:createFormObject(inputs)});
+        console.log(data);
+        if (status==200){
             formRef.current.reset();
             initialize();
             return
         };
         // console.log(res);
-        window.alert(`There was an error...`);
+        // window.alert(`There was an error...`);
         
     }
-
-    
 
     if (isObjEmpty(pageData.template)){
         return (<div>Loading</div>)
@@ -58,14 +64,15 @@ export const ResumeTemplate = () => {
     return (
         <section>
             <h1><span className="font-200">{pageData.template}</span></h1>
-            {/* {pageData.template.template} */}
+            <h3><span><a href="/templates">Back to applications...</a></span></h3>
             
             <form className={"bordered secondary"} onSubmit={handleSubmit} ref={formRef} id={"job"}>
                 <div className="height-padding"><label htmlFor={":title"}>Title:</label><input className={STYLES.input} name=":title"/></div>
                 <div className="height-padding"><label htmlFor={":description"} >Description:</label><input className={STYLES.input} name=":description"/></div>
+                <div className="height-padding"><label htmlFor={":organization"} >Organization:</label><input className={STYLES.input} name=":organization"/></div>
                 <div className="height-padding"><label htmlFor={":start"} >Start Date:</label><input type={"date"} className={STYLES.input} name=":start"/></div>
                 <div className="height-padding"><label htmlFor={":end"} >End Data:</label><input type={"date"} className={STYLES.input} name=":end"/></div>
-                <button className={"right block inline-margin rounded action height-padding"} onClick={handleSubmit}><i className={ICONS.add}></i></button>
+                <button className={"right block inline-margin rounded action height-padding"} onClick={handleSubmit}>{ICONS.add}</button>
             </form>
             <ul>
                 {jobs.map(
@@ -91,7 +98,7 @@ const Job = ({updateData, job}) => {
     const form = useForm(formRef.current);
     const [changed, setChanged] = useState(false);
     const disabled= active? null : "disabled";
-    const {id, title, description, resumeId, start, end} = job;
+    const {id, title, description, organization, resumeId, start, end} = job;
     const handleEdit = (e) => {
         e.preventDefault();
         const id = e.currentTarget.id;
@@ -103,7 +110,7 @@ const Job = ({updateData, job}) => {
         e.preventDefault();
         setClass(STYLES.disabled);
         console.log(e.currentTarget.id);
-        const {res, status} = await api.execute({endpoint:"/api/job/delete",criteria:[[criterion("id","=",id)]]})
+        const {res, status} = await api.execute({endpoint:ENDPOINTS.delete,criteria:[[criterion("id","=",id)]]})
         updateData();   
     };
 
@@ -116,7 +123,7 @@ const Job = ({updateData, job}) => {
     const handleUpdate = async () => {
         let inputs = form.data();
         inputs.append(":resumeId",resumeId);
-        const {res,status} = await api.execute({endpoint:"/api/job/update",inputs: form.createFormObject(inputs), criteria:[[criterion("id","=",id)]]});
+        const {res,status} = await api.execute({endpoint:ENDPOINTS.update,inputs: form.createFormObject(inputs), criteria:[[criterion("id","=",id)]]});
         console.log(res);
     };
 
@@ -142,6 +149,7 @@ const Job = ({updateData, job}) => {
             <form ref={formRef} id={"job"} onBlur={handleFocus}>
                 <div>
                 <input onChange={handleChange} disabled={disabled} className={`block font-200 x-90 ${classState}`} name=":title" defaultValue={title}/>
+                <input onChange={handleChange} disabled={disabled} className={`block font-200 x-90 ${classState}`} name=":organization" defaultValue={organization}/>
                     
                 </div>
                 {/* <label htmlFor={":title"}>Title:</label> */}
@@ -153,13 +161,13 @@ const Job = ({updateData, job}) => {
                 <span> to </span>
                 <input onChange={handleChange} disabled={disabled} className={`x-30 ${classState}`} name=":end" defaultValue={end} type={"date"}/>
                 <textarea onChange={handleChange} disabled={disabled} className={`block x-90 ${classState}`} name=":description" defaultValue={description}/>
-                <div className="height-spacing flex flex-around action">
-                    <button className={STYLES.formButton} id={id} value={"add"} onClick={handleAdd}><i className={ICONS.add}></i></button>
+                <div className="height-spacing flex flex-around primary">
+                    <button className={STYLES.formButton} id={id} value={"add"} onClick={handleAdd}>{ICONS.add}</button>
                     {active?
-                        <button className={STYLES.formButton} id={id} value={"save"} onClick={handleSave}><i className={ICONS.save}></i></button> :    
-                        <button className={STYLES.formButton} id={id} value={"edit"} onClick={handleEdit}><i className={ICONS.edit}></i></button>
+                        <button className={STYLES.formButton} id={id} value={"save"} onClick={handleSave}>{ICONS.save}</button> :    
+                        <button className={STYLES.formButton} id={id} value={"edit"} onClick={handleEdit}>{ICONS.edit}</button>
                     }
-                    <button className={STYLES.formButton} id={id} value={"delete"} onClick={handleDelete}><i className={ICONS.delete}></i></button>
+                    <button className={STYLES.negativeButton} id={id} value={"delete"} onClick={handleDelete}>{ICONS.delete}</button>
                 </div>
                 
                 

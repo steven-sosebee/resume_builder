@@ -6,6 +6,15 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { ButtonDelete } from "../components/Buttons/delete";
 import { ICONS } from "../data/iconClasses";
 
+// /templates
+const ENDPOINTS = {
+    read: "/resume/read",
+    create: "/resume/create",
+    delete: "/resume/delete",
+    update: "/resume/update",
+
+}
+
 export const Templates = () => {
     const navigate = useNavigate();
     const formRef = useRef();
@@ -14,20 +23,18 @@ export const Templates = () => {
     const [templates, setTemplates] = useState([{template:"No data",id:0}]);
 
     const handleSelect = async (e) => {
-        // const {data:selection} = await useAPI.execute({endpoint:"/api/resume/select", criteria:[[criterion("id", "=", e.currentTarget.id)]]});
         navigate(`/template/${e.currentTarget.id}`)
-
     };
 
     const handleDelete = async (e) => {
-        const {data:selection} = await useAPI.execute({endpoint:"/api/resume/delete", criteria:[[criterion("id","=",e.currentTarget.id)]]});
-        console.log(selection);
+        const {data:selection} = await useAPI.execute({endpoint:ENDPOINTS.delete, criteria:[[criterion("id","=",e.currentTarget.id)]]});
         getTemplates();
     }
+    
     const submitForm = async (e) => {
         // e.preventDefault();
         console.log(templateForm.dataObject());
-        const {res,status} = await useAPI.execute({inputs:templateForm.dataObject(), endpoint:"/api/resume/new"});
+        const {res,status} = await useAPI.execute({inputs:templateForm.dataObject(), endpoint:ENDPOINTS.create});
         // console.log(data);
         if (status==200){
             formRef.current.reset();
@@ -37,7 +44,7 @@ export const Templates = () => {
     }
 
     const getTemplates = async () => {
-        const {data:initial} = await useAPI.execute({endpoint:"/api/resume/select"});
+        const {data:initial} = await useAPI.execute({endpoint:ENDPOINTS.read});
         setTemplates(()=>initial);
     }
 
@@ -52,7 +59,7 @@ export const Templates = () => {
             
             <form className={"bordered secondary"} onSubmit={(e)=>e.preventDefault()} id="template" ref={formRef}>
                 <label for={":template"}>Create a new template:</label><input className={' block x-90 active'} name=":template"/>
-                <button className={"right inline-margin rounded action height-padding"} onClick={submitForm}><i className={ICONS.add}></i></button>
+                <button className={"right inline-margin rounded action height-padding"} onClick={submitForm}>{ICONS.add}</button>
             </form>
             
 
@@ -60,8 +67,8 @@ export const Templates = () => {
                 {templates.map(template=>(
                     <li className="height-padding highlight">
                         <span>{template.template}</span>
-                        <button className={"inline-margin"} onClick={handleSelect} id={template.id}><i className={ICONS.action}></i></button>
-                        <button className={"inline-margin"} onClick={handleDelete} id={template.id}><i className={ICONS.delete}></i></button>
+                        <button className={"inline-margin"} onClick={handleSelect} id={template.id}>{ICONS.action}</button>
+                        <button className={"inline-margin"} onClick={handleDelete} id={template.id}>{ICONS.delete}</button>
                     </li>
                 ))}
             </ul>

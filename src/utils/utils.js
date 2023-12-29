@@ -26,3 +26,4 @@ export const groupBy = (array, field, obj) => {
         obj[element[field]].push(element);
     })
 }
+
