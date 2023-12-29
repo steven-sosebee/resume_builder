@@ -97,7 +97,10 @@
 }
 
 .height-spacing {
-    margin-block: 10px;
+    margin-block: calc(var(--margin) / 2);
+}
+.inline-spacing {
+    margin-inline: var(--margin);
 }
 .rounded {
     border-radius: 20px;

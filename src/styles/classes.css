@@ -10,7 +10,7 @@
 
 .tertiary {
     background-color: var(--tertiary-color);
-    color: var(--primary-color);
+    color: var(--font-color);
 }
 
 .warning {

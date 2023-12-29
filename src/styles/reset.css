@@ -42,7 +42,7 @@ body {
 button {
     appearance:none;
     display: inline-block;
-    margin:5px
+    /* margin:5px */
 }
 
 ul {
@@ -76,4 +76,10 @@ textarea {
 textarea:invalid {
     border: red;
     background-color: var(--negative-color);
+}
+
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
 }
