@@ -5,15 +5,16 @@ import { ButtonActions } from "../components/Buttons/actions"
 import { Navigate, useNavigate } from "react-router-dom";
 import { ButtonDelete } from "../components/Buttons/delete";
 import { ICONS } from "../data/iconClasses";
+import { ENDPOINTS } from "../data/endpoints";
 
 // /templates
-const ENDPOINTS = {
-    read: "/resume/read",
-    create: "/resume/create",
-    delete: "/resume/delete",
-    update: "/resume/update",
+// const ENDPOINTS = {
+//     readResume: "/resume/read",
+//     createResume: "/resume/create",
+//     deleteResume: "/resume/delete",
+//     updateResume: "/resume/update",
 
-}
+// }
 
 export const Templates = () => {
     const navigate = useNavigate();
@@ -27,14 +28,14 @@ export const Templates = () => {
     };
 
     const handleDelete = async (e) => {
-        const {data:selection} = await useAPI.execute({endpoint:ENDPOINTS.delete, criteria:[[criterion("id","=",e.currentTarget.id)]]});
+        const {data:selection} = await useAPI.execute({endpoint:ENDPOINTS.deleteResume, criteria:[[criterion("id","=",e.currentTarget.id)]]});
         getTemplates();
     }
     
     const submitForm = async (e) => {
         // e.preventDefault();
         console.log(templateForm.dataObject());
-        const {res,status} = await useAPI.execute({inputs:templateForm.dataObject(), endpoint:ENDPOINTS.create});
+        const {res,status} = await useAPI.execute({inputs:templateForm.dataObject(), endpoint:ENDPOINTS.createResume});
         // console.log(data);
         if (status==200){
             formRef.current.reset();
@@ -44,7 +45,7 @@ export const Templates = () => {
     }
 
     const getTemplates = async () => {
-        const {data:initial} = await useAPI.execute({endpoint:ENDPOINTS.read});
+        const {data:initial} = await useAPI.execute({endpoint:ENDPOINTS.getResume});
         setTemplates(()=>initial);
     }
 

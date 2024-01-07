@@ -5,16 +5,17 @@ import { useForm } from "../Hooks/useForm";
 import { createFormObject, isObjEmpty } from "../utils/utils";
 import { ICONS } from "../data/iconClasses";
 import { STYLES } from "../data/styleClasses";
+import { ENDPOINTS } from "../data/endpoints";
 
 // /template/:id/:jobid
-const ENDPOINTS = {
-    getJob: "/api/job/select",
-    getLinkedActivities: "/api/activity/select",
-    linkActivity:"/api/activity/add",
-    unlinkActivity:"/api/activity/delete",
-    update:"/api/activity/update"
+// const ENDPOINTS = {
+//     getJob: "/job/read",
+//     getLinkedActivities: "/activity/read",
+//     linkActivity:"/activity/add",
+//     unlinkActivity:"/activity/delete",
+//     update:"/activity/update"
 
-}
+// }
 
 export const JobTemplate = () => {
     const navigate = useNavigate();
@@ -81,7 +82,7 @@ export const JobTemplate = () => {
                 <div className="height-padding"><label htmlFor={":description"} >Description:</label><input className={STYLES.input} name=":description"/></div>
                 {/* <label htmlFor={":start"} >Start Date:</label><input type={"date"} className={"primary"} name=":start"/> */}
                 {/* <label htmlFor={":end"} >End Data:</label><input type={"date"} className={"primary"} name=":end"/> */}
-                <button className={"right block inline-margin rounded action height-padding"} onClick={handleSubmit}><i className={ICONS.add}></i></button>
+                <button className={"right block inline-margin rounded action height-padding"} onClick={handleSubmit}>{ICONS.add}</button>
             </form>
             <ul>
                 {activities.map(
@@ -130,7 +131,7 @@ const Activity = ({updateData, activity}) => {
 
     const handleUpdate = async () => {
         let inputs = form.data();
-        inputs.append(":jobId",jobId);
+        // inputs.append(":jobId",jobId);
         const {res,status} = await api.execute({endpoint:ENDPOINTS.update,inputs: form.createFormObject(inputs), criteria:[[criterion("id","=",id)]]});
         console.log(res);
     };
@@ -157,10 +158,10 @@ const Activity = ({updateData, activity}) => {
             <form ref={formRef} id={"job"} onBlur={handleFocus}>
                 <textarea onChange={handleChange} disabled={disabled} className={`x-90 ${classState}`} name=":description" defaultValue={description}/>
                 <div className="height-spacing flex flex-around action">    
-                    <button className={STYLES.formButton} id={id} value={"delete"} onClick={handleDelete}><i className={ICONS.delete}></i></button>
+                    <button className={STYLES.formButton} id={id} value={"delete"} onClick={handleDelete}>{ICONS.delete}</button>
                     {active?
-                        <button className={STYLES.formButton} id={id} value={"save"} onClick={handleSave}><i className={ICONS.save}></i></button> :    
-                        <button className={STYLES.formButton} id={id} value={"edit"} onClick={handleEdit}><i className={ICONS.edit}></i></button>
+                        <button className={STYLES.formButton} id={id} value={"save"} onClick={handleSave}>{ICONS.save}</button> :    
+                        <button className={STYLES.formButton} id={id} value={"edit"} onClick={handleEdit}>{ICONS.edit}</button>
                     }
                 </div>
                 {/* <label htmlFor={":title"}>Title:</label> */}

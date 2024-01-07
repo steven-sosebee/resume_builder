@@ -5,17 +5,18 @@ import { useForm } from "../Hooks/useForm";
 import { createFormObject, isObjEmpty } from "../utils/utils";
 import { ICONS } from "../data/iconClasses";
 import { STYLES } from "../data/styleClasses";
+import { ENDPOINTS } from "../data/endpoints";
 
 // //template/:id
-const ENDPOINTS = {
-    getResume: "/resume/read",
-    create: "/job/create",
-    delete: "/job/delete",
-    update: "/job/update",
-    getJobs:"/job/getresumejobs",
-    linkJob: "/resume/addjob"
+// const ENDPOINTS = {
+//     getResume: "/resume/read",
+//     createJob: "/job/create",
+//     deleteJob: "/job/delete",
+//     updateJob: "/job/update",
+//     getJobs:"/job/getresumejobs",
+//     linkJob: "/resume/addjob"
 
-}
+// }
 
 export const ResumeTemplate = () => {
     const {id} = useParams();
@@ -110,7 +111,7 @@ const Job = ({updateData, job}) => {
         e.preventDefault();
         setClass(STYLES.disabled);
         console.log(e.currentTarget.id);
-        const {res, status} = await api.execute({endpoint:ENDPOINTS.delete,criteria:[[criterion("id","=",id)]]})
+        const {res, status} = await api.execute({endpoint:ENDPOINTS.deleteJob,criteria:[[criterion("id","=",id)]]})
         updateData();   
     };
 
@@ -123,7 +124,7 @@ const Job = ({updateData, job}) => {
     const handleUpdate = async () => {
         let inputs = form.data();
         inputs.append(":resumeId",resumeId);
-        const {res,status} = await api.execute({endpoint:ENDPOINTS.update,inputs: form.createFormObject(inputs), criteria:[[criterion("id","=",id)]]});
+        const {res,status} = await api.execute({endpoint:ENDPOINTS.updateJob,inputs: form.createFormObject(inputs), criteria:[[criterion("id","=",id)]]});
         console.log(res);
     };
 
