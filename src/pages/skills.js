@@ -64,6 +64,7 @@ export const Skills = () => {
                         <option>No values</option>
                     }
                 </select>
+                <button onClick={handleSubmit} className={STYLES.submitButton}>{ICONS.add}</button>
             </form>
             <ul>
                 {Array.isArray(skills)? 
