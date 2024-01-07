@@ -7,8 +7,17 @@ import { isObjEmpty } from "../utils/utils";
 export const useFetch =() => {
     const defaultURL = process.env.REACT_APP_URL;
     const key = process.env.REACT_APP_KEY;
-    
+
+    const STATE = {
+        uninitiated: 0,
+        loading: 1,
+        finished:2
+    }
+    const [loading, setLoading] = useState(STATE.uninitiated);
+
+
     const execute = async ({criteria=[], inputs={}, ordered=[], endpoint=defaultURL}) => {
+        // setLoading(STATE.loading);
         let post={};
         const apiPrefix = (process.env.NODE_ENV=="production")? "/api" : "";
         try{
@@ -32,16 +41,18 @@ export const useFetch =() => {
             }
             const res = await fetch(endpoint,post);
             const resJSON = await res.json();
+            // setLoading(STATE.finished);
             if(res.status !==200 || res.ok !==true){
                 return {status: res.status};
             }
-            console.log(resJSON);
+            // console.log(resJSON);
             const e = String(resJSON.data).startsWith("SQLSTATE");
-            console.log(e);
+            // console.log(e);
             if(e) {throw Error(resJSON.data)};
             return {data: resJSON.data, res: resJSON, status:res.status};            
         }
         catch(error){
+            console.log(error);
             window.alert(error);
             return {status: 500};
         }
@@ -71,7 +82,7 @@ export const useFetch =() => {
           .join("");
       };
 
-    return {execute}
+    return {execute};
     
 }    
 

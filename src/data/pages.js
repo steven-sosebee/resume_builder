@@ -1,10 +1,11 @@
-import { Applications } from "../pages/testing/applications"
+import { Applications } from "../pages/applications"
 import { ResumeTemplate } from '../pages/resumeTemplate';
 import { Crypto } from '../pages/testing/crypto';
 import { JobTemplate } from '../pages/jobTemplate';
 import { Templates } from '../pages/templates';
 import { FormTest } from '../pages/testing/formTest';
 import { Application } from "../pages/application";
+import { Skills } from "../pages/skills";
 
 export const env = {
     abandoned:-1,
@@ -66,14 +67,21 @@ export const PAGES = [
         path: '/applications',
         element:<Applications/>,
         text:"Applications",
-        environment: env.development,
+        environment: env.production,
         type:componentType.page
     },
     {
         path:'/application/:id',
         element: <Application/>,
         text: "",
-        environment: env.development,
+        environment: env.production,
         type:componentType.route
+    },
+    {
+        path:"/skills",
+        element:<Skills/>,
+        text:"Skills",
+        environment: env.production,
+        type:componentType.page
     }
 ]
