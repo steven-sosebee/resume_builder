@@ -16,7 +16,7 @@ export const Header = () => {
 
     return (
         <header onBlur={loseFocus}> {expanded? <button className="inline-margin block" onClick={expand}>{ICONS.close}</button> :
-                    <button className="inline-margin block" onClick={expand}>{ICONS.action}</button>}
+                    <button className="height-spacing inline-margin block" onClick={expand}>{ICONS.action}</button>}
                         
             <nav className="base" >
                 {expanded? 
