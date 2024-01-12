@@ -17,7 +17,7 @@ export const ENDPOINTS = {
 
     // Activity Endpoints:
     getJobActivities: "/activity/read",
-
+    activityLinkSkill: "/activity/linkSkill",
     // Application Endpoints:
     getApplication: "/application/read",
     linkTemplate: "/application/createresume",
@@ -28,8 +28,12 @@ export const ENDPOINTS = {
 
     // Qualification Endpoints:
     getQualification: "/qualification/read",
+    getQualifications: "/application/getQualifications",
     createQualification: "/qualification/create",
+    createQualifications: "/qualification/createMultiple",
     deleteQualification: "/qualification/delete",
+    linkSkill:"/qualification/linkSkill",
+    // getLinkedSkills:"/qualification/getLinkedSkills",
     
     // Skill Endpoints:
     getSkills:"/skill/read",

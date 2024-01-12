@@ -5,6 +5,9 @@ import { createFormObject, isObjEmpty } from "../utils/utils";
 import { STYLES } from "../data/styleClasses";
 import { ICONS } from "../data/iconClasses";
 import { ENDPOINTS } from "../data/endpoints";
+import { Dialog } from "../components/dialog";
+import { Skills } from "./skills";
+import { TextArea } from "./spacing";
 
 // const ENDPOINTS = {
 //     getApplication: "/application/read",
@@ -35,11 +38,13 @@ export const Application = () => {
     const [templates, setTemplates] = useState();
     const [activeTemplate, setActiveTemplate] = useState();
     const [qualifications, setQualifications] = useState();
+    const [skills, setSkills] = useState();
+    const skillRef = useRef();
 
     const handleDisplayResume = async (resumeId) => {
         const {data, status} = await api.execute({endpoint:ENDPOINTS.getResume,criteria:[[criterion("id","=",resumeId)]]});
         const {data:jobs} = await api.execute({endpoint:ENDPOINTS.getTemplateJobs,criteria:[[criterion("resumeId","=",resumeId)]]});
-
+        
         const activities = jobs.map(({id}) => {
 
         })
@@ -48,12 +53,16 @@ export const Application = () => {
 
     const initialize = async () => {
         const {data: apiApplication, status: applicationStatus} = await api.execute({endpoint: ENDPOINTS.getApplication, criteria:[[criterion("id","=",id)]]});
-        const {data: apiQualifications, status: qualificationStatus} = await api.execute({endpoint:ENDPOINTS.getQualification});
+        const {data: apiQualifications, status: qualificationStatus} = await api.execute({endpoint:ENDPOINTS.getQualifications, criteria:[[criterion("applicationId","=",id)]]});
+        const {data: apiSkills, status:skillsStatus} = await api.execute({endpoint:ENDPOINTS.getSkills});
+        // console.log(apiSkills);
+        
         const {data: apiApplicationTemplate,status:applicationTemplateStatus} = await api.execute({endpoint: ENDPOINTS.getResume, criteria:[[criterion("applicationId","=",id)]]});
         // console.log(apiApplicationTemplate);
-        if ([applicationStatus, applicationTemplateStatus,qualificationStatus].every(status =>status==200)){
+        if ([applicationStatus, applicationTemplateStatus,qualificationStatus, skillsStatus].every(status =>status==200)){
             setApplication(apiApplication[0]);
             setQualifications(apiQualifications);
+            setSkills(apiSkills);
             if(isObjEmpty(apiApplicationTemplate[0])){
                 const {data: apiTemplates, status: templateStatus} = await api.execute({endpoint:ENDPOINTS.getResume});    
                 setTemplates(apiTemplates);
@@ -114,19 +123,39 @@ export const Application = () => {
     const qualificationSubmit = async (e) => {
         e.preventDefault();
         const form = new FormData(e.target);
-        form.append(":qualificationType",0);
-        form.append(":applicationId",id);
-        const {data} = await api.execute({endpoint:ENDPOINTS.createQualification,inputs:createFormObject(form)});
-        const {data:newQualifications} = await api.execute({endpoint:ENDPOINTS.getQualifications});
+        const quals = form.get(":qualification");
+        console.log(quals.split("\n"));
+        const qualificationArray = quals.split("\n");
+        const input = 
+        qualificationArray.map(qual=>(
+            {
+                ":qualificationType": 0,
+                ":applicationId":id,
+                ":qualification": qual
+            }
+        ));
+        console.log(input);
+        // e.target.reset();
+        // form.append(":qualificationType",0);
+        // form.append(":applicationId",id);
+        const {data} = await api.execute({endpoint:ENDPOINTS.createQualifications,inputs:input});
+        const {data:newQualifications} = await api.execute({endpoint:ENDPOINTS.getQualification});
         setQualifications(newQualifications);
+    
     }
 
-    const qualificationDelete = async (e) => {
-        const id = e.currentTarget.id;
+    // const qualificationDelete = async (e) => {
+    //     const id = e.currentTarget.id;
         
-        const {data} = await api.execute({endpoint:ENDPOINTS.deleteQualification, criteria:[[criterion("id","=",id)]]});
-        const {data:newQualifications} = await api.execute({endpoint:ENDPOINTS.getQualifications});
-        setQualifications(newQualifications);
+    //     const {data} = await api.execute({endpoint:ENDPOINTS.deleteQualification, criteria:[[criterion("id","=",id)]]});
+        
+    // }
+
+    const openDialog = (e)=> {
+        // console.log(e.target);
+        // console.log(e.target.children[0]);
+        skillRef.current.showModal();
+    
     }
 
     return (
@@ -168,20 +197,102 @@ export const Application = () => {
             }
 
             <section>
+            <button onClick={openDialog}>Add Skill</button>
+            <dialog ref={skillRef}>
+                    <button onClick={(e)=>skillRef.current.close()} className={STYLES.negativeButton}>{ICONS.close}</button>
+                    <Skills/>
+                </dialog>
+                {/* <TextArea/> */}
                 <form onSubmit={qualificationSubmit}>
-                    <label htmlFor=":qualification">Qualifications</label><input name=":qualification" className={STYLES.input}/>
+                    <label htmlFor=":qualification">Qualifications</label><textarea name=":qualification" className={STYLES.input}/>
+                    <button type="submit" className={STYLES.submitButton}>{ICONS.add}</button>
                 </form>
+                
                 <ul>
                     {Array.isArray(qualifications)?
-                        qualifications.map(({id, qualification,qualificationType})=>(
+                        qualifications.map(({qualification, skills},i)=>(
                         <li>
-                            <p>{qualification}</p><button id={id} onClick={qualificationDelete} className={STYLES.formButton}>{ICONS.delete}</button>
+                            <Qualification qual={qualification} skills={skills}/>
+                            {/* <p>{qualification}</p>
+                            <button id={id} onClick={qualificationDelete} className={STYLES.formButton}>{ICONS.delete}</button>
+                            <select name={":skillId"}>
+                                {Array.isArray(skills)?
+                                    skills.map(({skill,id})=>(
+                                        <option value={id}>{skill}</option>
+                                    )) :
+                                    <option>Choose a skill</option>
+                                }
+                                
+                            </select> */}
+                            
+                            
                         </li>
                     )) :
                     <></>
                 }
                 </ul>
+                
             </section>
         </div>
+    )
+}
+
+const Qualification = ({qual, skills}) => {
+    const {qualification, id} = qual;
+    // const {id:skillId} = skills;
+    const api = useFetch();
+    const [linkedSkill, setLinkedSkill] = useState();
+    const [openSkill, setOpenSkill] = useState("hidden");
+
+    const initialize = async () => {
+        // const {data} = await api.execute({endpoint:ENDPOINTS.getLinkedSkills, criteria:[[criterion("qualificationId","=",id)]]});
+        // setLinkedSkill(data);
+
+    }
+    const updateQualification = async (e) => {
+        const input = {":qualificationId": id, ":skillId": parseInt(e.target.value)};
+        const {data} = await api.execute({endpoint:ENDPOINTS.linkSkill,inputs:input});
+        console.log(data);
+        initialize();
+    }
+
+    useEffect(()=>{
+        initialize();
+    },[])
+    const openSelect = (e) => {
+        if(openSkill=="hidden"){ 
+            setOpenSkill(null) 
+        } else {
+            setOpenSkill("hidden")
+        }
+    }
+    return (
+        <article>
+            <p>{qualification}</p>
+            {/* <button id={id} onClick={qualificationDelete} className={STYLES.formButton}>{ICONS.delete}</button> */}
+            
+            <button onClick={openSelect}>{ICONS.expand}</button>    
+            <select className={STYLES.input + openSkill} onChange={updateQualification} name={":skillId"}>
+                {Array.isArray(skills)?
+                    skills.map(({skill,id})=>(
+                        <option key={id} value={id}>{skill}</option>
+                    )) :
+                    <option>Choose a skill</option>
+                }
+            
+            </select>
+            <ul className={"secondary"}>
+                {Array.isArray(linkedSkill)?
+                    linkedSkill.map(({skill, id})=>(
+                        <li>
+                            {skill}
+                        </li>
+                    )):
+                    <></>
+                }
+            </ul>
+            </article>
+                            
+                            
     )
 }

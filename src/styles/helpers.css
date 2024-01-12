@@ -116,3 +116,11 @@
 .text-centered {
     text-align: center;
 }
+
+.shadow {
+    box-shadow: var(--shadow);
+}
+
+.hidden {
+    visibility: hidden;
+}

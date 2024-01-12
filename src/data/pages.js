@@ -6,6 +6,7 @@ import { Templates } from '../pages/templates';
 import { FormTest } from '../pages/testing/formTest';
 import { Application } from "../pages/application";
 import { Skills } from "../pages/skills";
+import { Skill } from "../pages/skill";
 
 export const env = {
     abandoned:-1,
@@ -83,5 +84,12 @@ export const PAGES = [
         text:"Skills",
         environment: env.production,
         type:componentType.page
+    },
+    {
+        path:"/skill/:id",
+        element:<Skill/>,
+        text:"",
+        environment:env.development,
+        type:componentType.route
     }
 ]

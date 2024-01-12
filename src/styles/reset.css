@@ -57,7 +57,7 @@ li {
     margin-top: 10px;
 }
 
-input {
+input, select {
     /* all:unset;   */
     padding:5px 5px;
     margin: 2px 5px;
@@ -65,7 +65,7 @@ input {
 
 form {
     margin: 5px;
-
+    padding: 5px;
 }
 
 textarea {

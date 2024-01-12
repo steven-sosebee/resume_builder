@@ -1,5 +1,5 @@
 export const ICONS = {
-    add: <i className="fa-solid fa-circle-plus"></i>,
+    add: <i class="fa-solid fa-plus"></i>,
     delete: <i className="fa-solid fa-trash-can"></i>,
     edit: <i className="fa-solid fa-pen-to-square"></i>,
     expand: <i className="fa-solid fa-bars"></i>,
