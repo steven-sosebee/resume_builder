@@ -4,9 +4,13 @@ import { isObjEmpty } from "../utils/utils";
 // import { useArray } from "./useArray";
 // import { APIModels, APIActions} from "../data/models";
 
+const defaultURL = process.env.REACT_APP_URL;
+const key = process.env.REACT_APP_KEY;
+const apiPrefix = (process.env.NODE_ENV=="production")? "/api" : "";
+const apiFile = ".php";
+const apiSuffix = ".php";
+
 export const useFetch =() => {
-    const defaultURL = process.env.REACT_APP_URL;
-    const key = process.env.REACT_APP_KEY;
 
     const STATE = {
         uninitiated: 0,
@@ -15,39 +19,124 @@ export const useFetch =() => {
     }
     const [loading, setLoading] = useState(STATE.uninitiated);
 
+    const apiCall = async (endpoint,queryParams=null,options) => {
+        queryParams?
+            endpoint = apiPrefix + endpoint + apiSuffix + "?" + queryParams :
+            endpoint = apiPrefix + endpoint + apiSuffix;
 
-    const execute = async ({criteria=[], inputs={}, ordered=[], endpoint=defaultURL}) => {
-        // setLoading(STATE.loading);
-        let post={};
-        const apiPrefix = (process.env.NODE_ENV=="production")? "/api" : "";
         try{
-
-            const query = {
-                criteria:criteria,
-                key:key,
-                ordered:ordered
-            };
-            if (!isObjEmpty(inputs)){
-                post.body = JSON.stringify(inputs);
-                post.method = "POST";
-            }
-
-            if (!isObjEmpty(query)){
-                const data_encode = btoa(JSON.stringify(query));                            
-                endpoint = apiPrefix + endpoint + ".php?q=" + data_encode;
-            }
             if (String(endpoint).length>2047){
                 return "message too long";
             }
-            const res = await fetch(endpoint,post);
+
+        const res = await fetch(endpoint,options);
+        const resJSON = await res.json();
+
+        if(res.status !==200 || res.ok !==true){
+            return {status: res.status};
+        }
+        const e = String(resJSON.data).startsWith("SQLSTATE");
+
+        if(e) {throw Error(resJSON.data)};
+        return {data: resJSON.data, res: resJSON, status:res.status};            
+        }
+        catch(error){
+            console.log(error);
+            window.alert(error);
+            return {status: 500};
+        }
+    };
+
+    const apiContructQuery = (queryParams, complexQuery) => {
+        if (complexQuery){
+            queryParams = encodeURL(queryParams);
+            queryParams = `q=${queryParams}`;
+
+        } else {
+            // console.log(queryParams);
+            queryParams = URLQuery(queryParams);
+        }
+        return queryParams;
+    }
+
+    const apiGet = async ({endpoint,filterCriteria=[],complexQuery}) => {
+        const queryParams = apiContructQuery(filterCriteria,complexQuery);
+        const options = {
+            method:'GET'
+        }
+
+        const api = await apiCall(endpoint,queryParams,options);
+        return api;
+    };
+
+    const apiDelete = async ({endpoint, filterCriteria, complexQuery}) => {
+        console.log(filterCriteria);
+        const queryParams = apiContructQuery(filterCriteria,complexQuery);
+        const options = {
+            method:'DELETE'
+        }
+        console.log(queryParams);
+        const api = await apiCall(endpoint,queryParams,options);
+        return api;
+    };
+
+    const apiInsert = async ({endpoint, newValues=[], headers={}}) => {
+        // const queryParams = apiContructQuery(filterCriteria,complexQuery);
+        const multiAdd = (newValues.length>1);
+        headers.multiAdd = multiAdd;
+        newValues = JSON.stringify(newValues);
+        const options = {
+            method:'POST',
+            body:newValues,
+            headers:headers
+        }
+        
+        const api = await apiCall(endpoint,null,options);
+        return api;
+    }
+    
+
+    const apiLink = async (endpoint, childRecord, parentRecord) => {
+
+    }
+
+    const apiUpdate = async ({endpoint, filterCriteria, newValues=[], complexQuery}) => {
+        const queryParams = apiContructQuery(filterCriteria,complexQuery);
+        newValues = JSON.stringify(newValues);
+        const options = {
+            method:'PATCH',
+            body:newValues
+        }
+        console.log(queryParams);
+        const api = await apiCall(endpoint,queryParams,options);
+        return api;
+    }
+
+    const execute = async ({criteria=[], encode= false, searchParams=[], inputs={}, ordered=[], method, headers=[], endpoint=defaultURL}) => {
+        let options={method:method};
+
+        try{
+            // add the filter criteria to endpoint as raw data or encoded data;
+            endpoint = endpoint + apiFile;
+
+            endpoint = craftURL(encode, searchParams,criteria, ordered, endpoint);
+            // create the options object by adding headers, body, etc.
+            options = craftBody(inputs, options, method, headers);           
+            console.log(endpoint);
+
+            if (String(endpoint).length>2047){
+                return "message too long";
+            }
+
+            const res = await fetch(endpoint,options);
             const resJSON = await res.json();
-            // setLoading(STATE.finished);
+            // const resJSON = await res.text();
+    
             if(res.status !==200 || res.ok !==true){
                 return {status: res.status};
             }
-            // console.log(resJSON);
             const e = String(resJSON.data).startsWith("SQLSTATE");
-            // console.log(e);
+
             if(e) {throw Error(resJSON.data)};
             return {data: resJSON.data, res: resJSON, status:res.status};            
         }
@@ -57,32 +146,16 @@ export const useFetch =() => {
             return {status: 500};
         }
     }
-    // source https://stackoverflow.com/questions/18279141/javascript-string-encryption-and-decryption
-    const crypt = (salt, text) => {
-        const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
-        const byteHex = (n) => ("0" + Number(n).toString(16)).substr(-2);
-        const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
-      
-        return text
-          .split("")
-          .map(textToChars)
-          .map(applySaltToChar)
-          .map(byteHex)
-          .join("");
-      };
-      
-      const decrypt = (salt, encoded) => {
-        const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
-        const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
-        return encoded
-          .match(/.{1,2}/g)
-          .map((hex) => parseInt(hex, 16))
-          .map(applySaltToChar)
-          .map((charCode) => String.fromCharCode(charCode))
-          .join("");
-      };
 
-    return {execute};
+    // const execute ="Delete";
+
+    return {
+        execute,
+        apiDelete,
+        apiGet,
+        apiInsert,
+        apiUpdate, 
+        apiLink};
     
 }    
 
@@ -94,174 +167,67 @@ export const orderBy = (field,ascending=true) => {
     const direction = ascending? '' : "DESC";
     return `${field} ${direction}`;
 }
+
+export const URLQuery = (params) => {
+    // const q = params.join("&");
+    const query = new URLSearchParams(params);
+    return query.toString();
+
+}
+
+const craftBody = (inputs, options, method) => {
+    if (!isObjEmpty(inputs)){
+        options.body = JSON.stringify(inputs);
+        method? options.method = method : options.method = "POST";
+    }
+    return options;
+}
+
+const encodeURL = (filter) => {
+    return btoa(JSON.stringify(filter));
+};
+
+const craftURL = (encode, searchParams,criteria, ordered, endpoint) => {
+    if (encode) {
+        const query = {
+            criteria:criteria,
+            key:key,
+            ordered:ordered
+        };
+        const data_encode = btoa(JSON.stringify(query));                            
+        endpoint = apiPrefix + endpoint + "?q=" + data_encode;
+    }
+    else {
+        if(searchParams.length==0){return endpoint};
+        // endpoint = endpoint + "?"+ searchParams;
+        endpoint = endpoint + "?"+ URLQuery(searchParams);
+    }
+    
+    return endpoint
+}
     
     
+// source https://stackoverflow.com/questions/18279141/javascript-string-encryption-and-decryption
+// const crypt = (salt, text) => {
+//     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
+//     const byteHex = (n) => ("0" + Number(n).toString(16)).substr(-2);
+//     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
     
+//     return text
+//         .split("")
+//         .map(textToChars)
+//         .map(applySaltToChar)
+//         .map(byteHex)
+//         .join("");
+// };
     
-    
-    
-    
-//     const MESSAGES = {
-//         loading: <div>Data Loading</div>,
-//         success: <div>Success...</div>,
-//         failure: <div>An error occurred...</div>,
-//         idle: <div>Waiting to initialize...</div>
-//     };
-//     const STATUS = {
-//         null:0,
-//         pending:100,
-//         complete:200,
-//         error:400
-//     }
-//     const data = useArray([]);
-//     const [affectedRows,setAffectedRows] = useState();
-//     // const [data, setData] = useState(null);
-//     const [status, setStatus] = useState(MESSAGES.idle);
-//     const [state, setState] = useState(STATUS.null);
-//     const [loading, setLoading] = useState(false);
-//     const [callParams,setCallParams] = useState({records:[],constraints:[],config:[]});
-//     const defaultURL = process.env.REACT_APP_URL;
-//     let params={};    
-//     let url= null;
-
-//     const loadingMessage = (
-//         <div>Data loading...</div>
-//     )
-
-//     const clearData = () => {
-//         data.setOutput([]);
-//     }
-
-//     const getData = () => {
-//         return data.output;
-//     }
-
-//     // const setParams =($params) => {
-//     //     const params = Object.keys($params).map(
-            
-//     //     )
-//     //     setCallParams((current)=>())
-//     // }
-
-//     const constructCall = (searchParams={}) => {
-//         url = defaultURL;
-//         let searchQuery = new URLSearchParams();
-//         searchParams.class = `${apiClass}`;
-//         Object.entries(searchParams).forEach(([key,value])=>{    
-//             searchQuery.append(key, value.toString())
-//         });
-//         url = url + searchQuery;
-//     }
-
-//     const executeCall = async () => {
-//         setStatus(()=>null)
-//         // console.log(params);
-        
-//         try{
-//             const res = await fetch(url, params);
-//             const resJSON = await res.json();
-//             setState(res.status);
-//             if(res.status !==200 || res.ok !==true){
-//                 setStatus(()=>MESSAGES.failure)
-//                 return
-//             }
-//             setStatus(()=>MESSAGES.success);
-            
-//             setAffectedRows(resJSON.data)
-//         }
-//         catch(error){
-//             setStatus(()=>MESSAGES.failure);
-//         }
-//     };
-
-//     const handleCall = async () => {
-//         try{
-//             const res = await fetch(url, params);
-//             const resJSON = await res.json();
-//             setState(res.status);
-//             setLoading(false);
-//             if(res.status !==200 || res.ok !==true){
-//                 setStatus(()=>MESSAGES.failure)
-//                 setState(res.status);
-//                 data.setOutput(resJSON.data);
-//                 return
-//             }
-//             setStatus(()=>MESSAGES.success);
-            
-//             data.setOutput(()=>resJSON.data);
-//             // console.log(resJSON.data);
-//             return resJSON.data;
-//             // console.log(resJSON.data.output);
-//         }
-//         catch(error){
-//             setLoading(false);
-//             setStatus(()=>MESSAGES.failure);
-//         }
-//     };
-
-
-//     const getRecords = async (body={},searchParams={}) =>{
-//         params.body=JSON.stringify(body)
-//         params.method = 'POST';
-//         searchParams.action = APIActions.get;
-//         setLoading(true);
-//         constructCall(searchParams);
-//         const res = await handleCall();
-//         // console.log(res);
-//         return res;
-//     }
-
-//     const insertRecords = async (body,searchParams={}) => {
-//         params.body=JSON.stringify(body)
-//         params.method = 'POST';
-//         searchParams.action = APIActions.insert;
-//         setLoading(true);
-//         constructCall(searchParams) 
-//         const res = await executeCall();
-//     };   
-
-//     const updateRecords = async (body,searchParams={}) => {
-//         params.body=JSON.stringify(body)
-//         params.method = 'POST';
-//         searchParams.action = APIActions.insert;
-//         setLoading(true);
-//         constructCall(searchParams) 
-//         const res = await executeCall();
-//     }
-//     const deleteRecords = async (body,searchParams={}) => {
-//         params.body=JSON.stringify(body)
-//         params.method = 'POST';
-//         searchParams.action = APIActions.delete;
-//         constructCall(searchParams);
-//         const res = await executeCall();
-//     };
-
-//     const handleAPI = async (body,searchParams={}, action, returnType='data') => {
-//         params.method = 'GET'
-//         if(Object.keys(body).length>0){
-//             params.method = 'POST';
-//             params.body=JSON.stringify(body)
-//         };
-//         searchParams.action = action;
-//         setLoading(true);
-//         constructCall(searchParams) 
-//         let res;
-//         switch (returnType) {
-//             case 'data': 
-//                 res = await handleCall();
-//                 break;
-//             case 'affectedRows':
-//                 setAffectedRows(()=>[]);
-//                 res = await executeCall();
-//                 break;
-//             default:
-//                 res = await handleCall();
-//         };
-//         return res;
-//     }
-
-//     return {
-//         getRecords,insertRecords,deleteRecords,updateRecords, clearData, handleAPI, getData, setCallParams, 
-//         callParams, affectedRows, data, status, state, loading, loadingMessage
-//     }
-// };  
+//     const decrypt = (salt, encoded) => {
+//     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
+//     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
+//     return encoded
+//         .match(/.{1,2}/g)
+//         .map((hex) => parseInt(hex, 16))
+//         .map(applySaltToChar)
+//         .map((charCode) => String.fromCharCode(charCode))
+//         .join("");
+// };
