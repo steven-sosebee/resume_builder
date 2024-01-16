@@ -7,6 +7,7 @@ import { FormTest } from '../pages/testing/formTest';
 import { Application } from "../pages/application";
 import { Skills } from "../pages/skills";
 import { Skill } from "../pages/skill";
+import { TestPage } from "../pages/testing/testing";
 
 export const env = {
     abandoned:-1,
@@ -27,6 +28,13 @@ export const PAGES = [
         element:<h1>Welcome to the resume builder</h1>,
         text:"Home",
         environment: env.live,
+        type:componentType.page
+    },
+    {
+        path:'/testing',
+        element:<TestPage/>,
+        text:"Testing",
+        environment: env.testing,
         type:componentType.page
     },
     {

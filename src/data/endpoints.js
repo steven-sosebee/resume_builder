@@ -1,6 +1,8 @@
+const prefix = "/v1/objects/";
 export const ENDPOINTS = {
 
     // Resume Endpoints:
+    Resume: `${prefix}resumes`,
     getResume: "/resume/read",
     linkJob: "/resume/addjob",
     createResume: "/resume/create",
@@ -9,6 +11,7 @@ export const ENDPOINTS = {
     
 
     // Job Endpoints:
+    Jobs:`${prefix}jobs`,
     getTemplateJobs: "/job/read",
     createJob: "/job/create",
     deleteJob: "/job/delete",
@@ -19,6 +22,7 @@ export const ENDPOINTS = {
     getJobActivities: "/activity/read",
     activityLinkSkill: "/activity/linkSkill",
     // Application Endpoints:
+    Application: `${prefix}applications`,
     getApplication: "/application/read",
     linkTemplate: "/application/createresume",
     updateApplication: "/application/update",
@@ -27,15 +31,21 @@ export const ENDPOINTS = {
     deleteApplication: "/application/delete",
 
     // Qualification Endpoints:
+    // Qualification: `${prefix}applications`,
+    ApplicationQualifications: `${prefix}applicationQualifications`,
     getQualification: "/qualification/read",
     getQualifications: "/application/getQualifications",
     createQualification: "/qualification/create",
     createQualifications: "/qualification/createMultiple",
     deleteQualification: "/qualification/delete",
     linkSkill:"/qualification/linkSkill",
+    createQualActivity: "/qualification/createActivity",
     // getLinkedSkills:"/qualification/getLinkedSkills",
     
     // Skill Endpoints:
+    Skill: `${prefix}skills`,
+    SkillTypes: `${prefix}skillTypes`,
+    SkillLevels: `${prefix}skillLevels`,
     getSkills:"/skill/read",
     createSkill:"/skill/create",
     deleteSkill:"/skill/delete",
@@ -43,3 +53,11 @@ export const ENDPOINTS = {
     getSkillLevels:"/skill/getLevels"   
     
 };
+
+export const OPERATORS = {
+    equal: "eq",
+    greaterThan:"gt",
+    lessThan: "lt",
+    equalOrGreater: "gte",
+    equalOrLater: "lte"
+}
