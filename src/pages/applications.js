@@ -32,6 +32,11 @@ const formFields = [
     }
 ]
 
+const APPLICATIONS = {
+    endpoint:ENDPOINTS.Application
+}
+
+
 export const Applications = () => {
     const navigate = useNavigate();
     const api = useFetch();
@@ -39,8 +44,8 @@ export const Applications = () => {
     const formRef = useRef(null);
 
     const initialize = async () => {
-        
-        const {data:apiApplications, status:status_applications} = await api.execute({endpoint:ENDPOINTS.getApplication});
+        const {data:apiApplications} = await api.apiGet(APPLICATIONS);
+        // const {data:apiApplications, status:status_applications} = await api.execute({endpoint:ENDPOINTS.getApplication});
         // const {data:apiJobs, res, status:status_jobs} = await api.execute({endpoint:"/api/job/getresumejobs", ordered:[orderBy("end", false), orderBy("start", false)], criteria:[[criterion("resumeId", "=", id)]]});
         setPageData(()=>(apiApplications));
     }
@@ -50,11 +55,14 @@ export const Applications = () => {
     },[])
 
     const handleSubmit = async (e) => {
+        const apiOptions = {...APPLICATIONS};
         e.preventDefault();
         const inputs = new FormData(formRef.current);
-        inputs.append(":status", 0);
-        console.log(createFormObject(inputs));
-        const {data, res, status} = await api.execute({endpoint:ENDPOINTS.addApplication, inputs:createFormObject(inputs)});
+        inputs.append("status", 0);
+        apiOptions.newValues = [createFormObject(inputs)];
+        
+        const {data, res, status} = await api.apiInsert(apiOptions);
+        // const {data, res, status} = await api.execute({endpoint:ENDPOINTS.addApplication, inputs:createFormObject(inputs)});
         if (status==200){
             formRef.current.reset();
             initialize();
@@ -70,7 +78,7 @@ export const Applications = () => {
             <form ref={formRef} className={STYLES.form}>
                 {formFields.map(({field,type, label}) => (
                     <div >
-                        <label htmlFor={field}>{label}</label><input className={STYLES.input} type={type} name={`:${field}`}/>
+                        <label htmlFor={field}>{label}</label><input className={STYLES.input} type={type} name={`${field}`}/>
                     </div>
                 ))}
                 <button className={STYLES.submitButton} onClick={handleSubmit}>{ICONS.add}</button>
@@ -103,9 +111,14 @@ const Application = ({application, updateData}) => {
     };
 
     const handleDelete = async (e) => {
+        const apiOptions = {...APPLICATIONS};
         e.preventDefault();
         setClass(STYLES.disabled);
-        const {res, status} = await api.execute({endpoint:ENDPOINTS.deleteApplication,criteria:[[criterion("id","=",id)]]})
+        apiOptions.filterCriteria = [["id",id]];
+        apiOptions.complexQuery = false;
+
+        const {res,status} = await api.apiDelete(apiOptions);
+        // const {res, status} = await api.execute({endpoint:ENDPOINTS.deleteApplication,criteria:[[criterion("id","=",id)]]})
         updateData();   
     };
 
@@ -116,9 +129,13 @@ const Application = ({application, updateData}) => {
     };
 
     const handleUpdate = async () => {
-        let inputs = new FormData(formRef.current);
+        const apiOptions = {...APPLICATIONS};
+        const inputs = new FormData(formRef.current);
+        apiOptions.newValues = [createFormObject(inputs)];
+        apiOptions.filterCriteria = [["id",id]];
         // inputs.append(":jobId",jobId);
-        const {res,status} = await api.execute({endpoint:ENDPOINTS.updateApplication,inputs: createFormObject(inputs), criteria:[[criterion("id","=",id)]]});
+        // const {res,status} = await api.execute({endpoint:ENDPOINTS.updateApplication,inputs: createFormObject(inputs), criteria:[[criterion("id","=",id)]]});
+        const {res,status} = await api.apiUpdate(apiOptions);
         console.log(res);
     };
 
@@ -143,9 +160,9 @@ const Application = ({application, updateData}) => {
     return (
         <li className={`secondary ${classState}`}>
             <form ref={formRef} id={"job"} onBlur={handleFocus}>
-                <input onChange={handleChange} disabled={disabled} className={`x-90 font-200 ${classState}`} name=":title" defaultValue={title}/>
-                <input onChange={handleChange} disabled={disabled} className={`x-90 ${classState}`} name=":organization" defaultValue={organization}/>
-                <input onChange={handleChange} disabled={disabled} className={`x-90 ${classState}`} name=":link" defaultValue={link} type={hidden}/>
+                <input onChange={handleChange} disabled={disabled} className={`x-90 font-200 ${classState}`} name="title" defaultValue={title}/>
+                <input onChange={handleChange} disabled={disabled} className={`x-90 ${classState}`} name="organization" defaultValue={organization}/>
+                <input onChange={handleChange} disabled={disabled} className={`x-90 ${classState}`} name="link" defaultValue={link} type={hidden}/>
                 <div className="height-spacing flex flex-around">    
                     <a href={`${link}`} className={STYLES.formButton} target="blank">{ICONS.openLink}</a>
                     {/* <button className={STYLES.formButton} id={id} value={"navigate"} onClick={handleLink}>{ICONS.openLink}</button> */}

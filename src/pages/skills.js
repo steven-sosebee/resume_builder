@@ -13,17 +13,33 @@ export const Skills = () => {
     const [skillLevels, setSkillLevels] = useState([]);
     const navigate = useNavigate();
 
+    const SKILLS = {
+        endpoint: ENDPOINTS.Skill
+    }
+    const SKILLTYPES = {
+        endpoint: ENDPOINTS.SkillTypes
+    }
+    const SKILLLEVELS = {
+        endpoint: ENDPOINTS.SkillLevels
+    }
     const initialize = async () => {
-        const {data:apiSkills} = await api.execute({endpoint:ENDPOINTS.getSkills});
-        const {data:apiTypes} = await api.execute({endpoint:ENDPOINTS.getSkillTypes});
-        const {data: apiLevels} = await api.execute({endpoint:ENDPOINTS.getSkillLevels});
-
+        const calls = await Promise.all(
+            [
+                api.apiGet(SKILLS),
+                api.apiGet(SKILLTYPES),
+                api.apiGet(SKILLLEVELS),
+            ]
+        );
+        
+        // const callIDs = ['Skills',"SkillTypes","SkillLevels"];
+        // const obj = calls.map((call,i)=>({[callIDs[i]]:call.data}))
+        // console.log(obj);
         // let groupedSkills;
         // groupBy(apiSkills,"skillType",groupedSkills);
-        console.log(apiSkills);
-        setSkills(apiSkills);
-        setSkillTypes(apiTypes);
-        setSkillLevels(apiLevels);
+        // console.log(apiSkills);
+        setSkills(calls[0].data);
+        setSkillTypes(calls[1].data);
+        setSkillLevels(calls[2].data);
     }
 
     useEffect(()=>{

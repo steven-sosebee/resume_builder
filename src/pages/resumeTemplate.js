@@ -18,17 +18,32 @@ import { ENDPOINTS } from "../data/endpoints";
 
 // }
 
+const RESUMES = {
+    endpoint:ENDPOINTS.Resume
+}
+
+const JOBS = {
+    endpoint:ENDPOINTS.Jobs
+}
 export const ResumeTemplate = () => {
     const {id} = useParams();
     const api = useFetch();
     const [pageData, setPageData] = useState({template:{},jobs:[]});
     const [jobs, setJobs] = useState([]);
     const formRef = useRef(null);   
-
+    const apiRESUMES = {...RESUMES,filterCriteria:[["id",id]]}
+    const apiJOBS = {...JOBS, filterCriteria:[["resumeId",id]]}
     const initialize = async () => {
         
-        const {data:apiTemplate, status:status_template} = await api.execute({endpoint:ENDPOINTS.getResume, criteria:[[criterion("id", "=", id)]]});
-        const {data:apiJobs, res, status:status_jobs} = await api.execute({endpoint:ENDPOINTS.getJobs, ordered:[orderBy("end", false), orderBy("start", false)], criteria:[[criterion("resumeId", "=", id)]]});
+        const [
+            {data:apiTemplate, status:status_template},
+            {data:apiJobs, res, status:status_jobs}
+         ] = await Promise.all([
+            api.apiGet(apiRESUMES),
+            api.apiGet(apiJOBS)
+        ])
+        // const {data:apiTemplate, status:status_template} = await api.execute({endpoint:ENDPOINTS.getResume, criteria:[[criterion("id", "=", id)]]});
+        // const {data:apiJobs, res, status:status_jobs} = await api.execute({endpoint:ENDPOINTS.getJobs, ordered:[orderBy("end", false), orderBy("start", false)], criteria:[[criterion("resumeId", "=", id)]]});
         setPageData(()=>(apiTemplate[0]));
         setJobs(()=>(apiJobs));
         console.log(res);
@@ -41,13 +56,15 @@ export const ResumeTemplate = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        const inputs = new FormData(formRef.current);
+        const inputs = new FormData(e.target);
         
         // console.log(formRef.current)
-        inputs.append(":resumeId",id);
+        inputs.append("resumeId",id);
         // console.log(createFormObject(inputs));
         // console.log(inputs);
-        const {data, res, status} = await api.execute({endpoint:ENDPOINTS.linkJob, inputs:createFormObject(inputs)});
+        const apiOptions = {...JOBS, newValues:[createFormObject(inputs)]};
+        const {data,status} = await api.apiInsert(apiOptions)
+        // const {data, res, status} = await api.execute({endpoint:ENDPOINTS.linkJob, inputs:createFormObject(inputs)});
         console.log(data);
         if (status==200){
             formRef.current.reset();
@@ -68,12 +85,12 @@ export const ResumeTemplate = () => {
             <h3><span><a href="/templates">Back to applications...</a></span></h3>
             
             <form className={"bordered secondary"} onSubmit={handleSubmit} ref={formRef} id={"job"}>
-                <div className="height-padding"><label htmlFor={":title"}>Title:</label><input className={STYLES.input} name=":title"/></div>
-                <div className="height-padding"><label htmlFor={":description"} >Description:</label><input className={STYLES.input} name=":description"/></div>
-                <div className="height-padding"><label htmlFor={":organization"} >Organization:</label><input className={STYLES.input} name=":organization"/></div>
-                <div className="height-padding"><label htmlFor={":start"} >Start Date:</label><input type={"date"} className={STYLES.input} name=":start"/></div>
-                <div className="height-padding"><label htmlFor={":end"} >End Data:</label><input type={"date"} className={STYLES.input} name=":end"/></div>
-                <button className={"right block inline-margin rounded action height-padding"} onClick={handleSubmit}>{ICONS.add}</button>
+                <div className="height-padding"><label htmlFor={"title"}>Title:</label><input className={STYLES.input} name="title"/></div>
+                <div className="height-padding"><label htmlFor={"description"} >Description:</label><input className={STYLES.input} name="description"/></div>
+                <div className="height-padding"><label htmlFor={"organization"} >Organization:</label><input className={STYLES.input} name="organization"/></div>
+                <div className="height-padding"><label htmlFor={"start"} >Start Date:</label><input type={"date"} className={STYLES.input} name="start"/></div>
+                <div className="height-padding"><label htmlFor={"end"} >End Data:</label><input type={"date"} className={STYLES.input} name="end"/></div>
+                <button className={"right block inline-margin rounded action height-padding"} value={"submit"}>{ICONS.add}</button>
             </form>
             <ul>
                 {jobs.map(

@@ -6,6 +6,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { ButtonDelete } from "../components/Buttons/delete";
 import { ICONS } from "../data/iconClasses";
 import { ENDPOINTS } from "../data/endpoints";
+import { createFormObject } from "../utils/utils";
 
 // /templates
 // const ENDPOINTS = {
@@ -16,10 +17,14 @@ import { ENDPOINTS } from "../data/endpoints";
 
 // }
 
+const RESUMES = {
+    endpoint:ENDPOINTS.Resume
+}
+
 export const Templates = () => {
     const navigate = useNavigate();
     const formRef = useRef();
-    const useAPI = useFetch();
+    const api = useFetch();
     const templateForm = useForm(formRef.current);
     const [templates, setTemplates] = useState([{template:"No data",id:0}]);
 
@@ -28,24 +33,29 @@ export const Templates = () => {
     };
 
     const handleDelete = async (e) => {
-        const {data:selection} = await useAPI.execute({endpoint:ENDPOINTS.deleteResume, criteria:[[criterion("id","=",e.currentTarget.id)]]});
+        // const {data:selection} = await useAPI.execute({endpoint:ENDPOINTS.deleteResume, criteria:[[criterion("id","=",e.currentTarget.id)]]});
         getTemplates();
     }
     
     const submitForm = async (e) => {
-        // e.preventDefault();
-        console.log(templateForm.dataObject());
-        const {res,status} = await useAPI.execute({inputs:templateForm.dataObject(), endpoint:ENDPOINTS.createResume});
+        e.preventDefault();
+        // console.log(templateForm.dataObject());
+        const inputs = new FormData(e.target);
+        const apiOptions = {...RESUMES};
+        apiOptions.newValues = [createFormObject(inputs)];
+        const {data,status} = await api.apiInsert(apiOptions);
+        // const {res,status} = await useAPI.execute({inputs:templateForm.dataObject(), endpoint:ENDPOINTS.createResume});
         // console.log(data);
         if (status==200){
-            formRef.current.reset();
+            e.target.reset();
             getTemplates();
         }
         
     }
 
     const getTemplates = async () => {
-        const {data:initial} = await useAPI.execute({endpoint:ENDPOINTS.getResume});
+        const {data:initial} = await api.apiGet(RESUMES);
+        // const {data:initial} = await useAPI.execute({endpoint:ENDPOINTS.getResume});
         setTemplates(()=>initial);
     }
 
@@ -58,9 +68,9 @@ export const Templates = () => {
         <content>
             <p>Resume Templates</p>
             
-            <form className={"bordered secondary"} onSubmit={(e)=>e.preventDefault()} id="template" ref={formRef}>
-                <label for={":template"}>Create a new template:</label><input className={' block x-90 active'} name=":template"/>
-                <button className={"right inline-margin rounded action height-padding"} onClick={submitForm}>{ICONS.add}</button>
+            <form className={"bordered secondary"} onSubmit={submitForm} id="template" ref={formRef}>
+                <label for={":template"}>Create a new template:</label><input className={' block x-90 active'} name="template"/>
+                <button value={"submit"}className={"right inline-margin rounded action height-padding"}>{ICONS.add}</button>
             </form>
             
 
