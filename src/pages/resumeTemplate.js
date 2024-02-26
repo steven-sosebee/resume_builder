@@ -160,7 +160,7 @@ const Job = ({updateData, job}) => {
     };
 
     const handleAdd = (e) => {
-        navigate(`/template/${resumeId}/${id}`)
+        navigate(`/template/${id}`)
     }
     return (
         <li className={`secondary height-padding ${classState}`}>

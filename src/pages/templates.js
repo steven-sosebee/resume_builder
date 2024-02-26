@@ -9,13 +9,7 @@ import { ENDPOINTS } from "../data/endpoints";
 import { createFormObject } from "../utils/utils";
 
 // /templates
-// const ENDPOINTS = {
-//     readResume: "/resume/read",
-//     createResume: "/resume/create",
-//     deleteResume: "/resume/delete",
-//     updateResume: "/resume/update",
 
-// }
 
 const RESUMES = {
     endpoint:ENDPOINTS.Resume

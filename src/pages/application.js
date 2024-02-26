@@ -32,6 +32,12 @@ const STATUS = {
 }
 
 
+const QUALIFICATIONS = {
+    endpoint:ENDPOINTS.ApplicationQualifications
+}
+const QUALIFICATIONACTIVITIES = {
+    endpoint:ENDPOINTS.QualificationActivities
+}
 
 export const Application = () => {
     const {id} = useParams();
@@ -53,9 +59,7 @@ export const Application = () => {
         filterCriteria: [["applicationId",id]]
     }
 
-    const QUALIFICATIONS = {
-        endpoint:ENDPOINTS.ApplicationQualifications
-    }
+    
     const SKILLS = {
         endpoint: ENDPOINTS.Skill
     }
@@ -76,19 +80,24 @@ export const Application = () => {
     };
 
     const initialize = async () => {
-        const {data: apiApplication, status: applicationStatus} = await api.apiGet(APPLICATION);
-        const {data: apiQualifications, status: qualificationStatus} = await api.apiGet(LINKEDQUALIFICATIONS);
-        const {data: apiSkills, status:skillsStatus} = await api.apiGet(SKILLS);
-        const {data: apiApplicationTemplate,status:applicationTemplateStatus} = await api.apiGet(LINKEDRESUME);
+        // const {data: apiApplication, status: applicationStatus} = await api.apiGet(APPLICATION);
+        // const {data: apiQualifications, status: qualificationStatus} = await api.apiGet(LINKEDQUALIFICATIONS);
+        // const {data: apiSkills, status:skillsStatus} = await api.apiGet(SKILLS);
+        // const {data: apiApplicationTemplate,status:applicationTemplateStatus} = await api.apiGet(LINKEDRESUME);
 
-        // const calls = await Promise.all(
-        //     [
-        //         api.apiGet(APPLICATION),
-        //         api.apiGet(LINKEDQUALIFICATIONS),
-        //         api.apiGet(SKILLS),
-        //         api.apiGet(LINKEDRESUME)
-        //     ]
-        // );
+        const [
+            {data: apiApplication, status: applicationStatus},
+            {data: apiQualifications, status: qualificationStatus},
+            {data: apiSkills, status:skillsStatus},
+            {data: apiApplicationTemplate,status:applicationTemplateStatus}
+        ]= await Promise.all(
+            [
+                api.apiGet(APPLICATION),
+                api.apiGet(LINKEDQUALIFICATIONS),
+                api.apiGet(SKILLS),
+                api.apiGet(LINKEDRESUME)
+            ]
+        );
         
         // const {data: apiApplication, status: applicationStatus} = await api.execute({endpoint: ENDPOINTS.getApplication, criteria:[[criterion("id","=",id)]]});
         // const {data: apiQualifications, status: qualificationStatus} = await api.execute({endpoint:ENDPOINTS.getQualifications, criteria:[[criterion("applicationId","=",id)]]});
@@ -118,10 +127,12 @@ export const Application = () => {
 
     const handleSelectTemplate = async (e) => {
         const resumeId = activeTemplate.resume.id;
-        const inputs = {":applicationid":parseInt(id), ":template": application.title};
+        const inputs = {"applicationid":parseInt(id), "template": application.title};
 
-        const {data, status} = await api.execute({endpoint:ENDPOINTS.linkTemplate,inputs:inputs,criteria:[[criterion("resumeId","=",resumeId)]]});
-        console.log(data);
+        const apiOptions = {}
+        // const {data} = await api.apiInsert(linkResumeTemplate)
+        // const {data, status} = await api.execute({endpoint:ENDPOINTS.linkTemplate,inputs:inputs,criteria:[[criterion("resumeId","=",resumeId)]]});
+        // console.log(data);
     }
 
     const handleDeselectTemplate = async (e) => {
@@ -180,7 +191,8 @@ export const Application = () => {
         // console.log(data);
         // const {data:newQualifications}
         // const {data: newQualifications} = await api.execute({endpoint:ENDPOINTS.getQualifications, criteria:[[criterion("applicationId","=",id)]]});
-        // setQualifications(newQualifications);
+        const {data: newQualifications, status: qualificationStatus} = await api.apiGet(LINKEDQUALIFICATIONS);
+        setQualifications(newQualifications);
     
     }
 
@@ -205,7 +217,7 @@ export const Application = () => {
             <p><span><a href="/applications">Back to applications...</a></span></p>
 
             {/* Status Selector */}
-            <label htmlFor=":status">Status:</label><select onChange={handleChange} name=":status" className={STYLES.form}>
+            <label htmlFor="status">Status:</label><select onChange={handleChange} name="status" className={STYLES.form}>
                 {Object.entries(STATUS).map(([key,value], index)=>(
                     
                     <option value={value}>{key}</option>
@@ -278,42 +290,64 @@ export const Application = () => {
 }
 
 const Qualification = ({qual, skills, applicationId}) => {
-    const {qualification:{id,qualification}, activities: linkedActivities, skills: linkedSkills} = qual;
+    // const {activities: linkedActivities, skills: linkedSkills} = qual;
     // const {id:skillId} = skills;
     const api = useFetch();
-    const [linkedSkill, setLinkedSkill] = useState(linkedSkills);
-    const [linkedActivity, setLinkedActivities] = useState(linkedActivities)
+    const [qualification,setQualification] = useState(qual.qualification);
+    const [linkedSkill, setLinkedSkill] = useState(qual.skills);
+    const [linkedActivity, setLinkedActivities] = useState(qual.activities);
+    
     // const [openSkill, setOpenSkill] = useState(" hidden");
     const skillSelect = useRef();
-    const initialize = async () => {
+
+    const refreshSkills = async () => {
+        const apiOptions = {...QUALIFICATIONS,filterCriteria:[["id",qualification.id]]};
         // const {data} = await api.execute({endpoint:ENDPOINTS.getLinkedSkills, criteria:[[criterion("qualificationId","=",id)]]});
+        const {data:{skills}} = await api.apiGet(apiOptions);
         // setLinkedSkill(data);
+        console.log(skills);
+
+    }
+    const refreshActivities = async () => {
+        const apiOptions = {...QUALIFICATIONS,filterCriteria:[["id",qualification.id]]};
+        // const {data} = await api.execute({endpoint:ENDPOINTS.getLinkedSkills, criteria:[[criterion("qualificationId","=",id)]]});
+        const {data:{activities}} = await api.apiGet(apiOptions);
+        setLinkedSkill(activities);
+        console.log(activities);
 
     }
     const updateQualification = async (e) => {
-        const input = {":qualificationId": id, ":skillId": parseInt(e.target.value)};
-        const {data} = await api.execute({endpoint:ENDPOINTS.linkSkill,inputs:input});
+        const apiOptions = {...QUALIFICATIONS};
+        const input = {qualificationId: qualification.id, skillId: parseInt(e.target.value)};
+        apiOptions.newValues=input;
+        const {data} = await api.apiUpdate(apiOptions);
+        // const {data} = await api.execute({endpoint:ENDPOINTS.linkSkill,inputs:input});
         // console.log(data);
-        initialize();
+        // initialize();
     }
 
     useEffect(()=>{
-        initialize();
+        // initialize();
     },[])
 
     const handleActivity = async (e) => {
         e.preventDefault();
+        const apiOptions = {...QUALIFICATIONACTIVITIES};
         // console.log(e.target);
         const inputs = createFormObject(new FormData(e.target));
-        // inputs[":applicationId"] = applicationId;
-        inputs[":activityId"] = id;
-        const {data} = await api.execute({endpoint:ENDPOINTS.createQualActivity});
+        // inputs.activityId = applicationId;
+        inputs.qualificationId = qualification.id;
+        apiOptions.newValues = [inputs];
+        const {data} = await api.apiInsert(apiOptions);
+        console.log(data);
+        refreshActivities();
+
 
     }
 
     return (
         <article>
-            <p>{qualification}</p>
+            <p>{qualification.qualification}</p>
             {/* <button id={id} onClick={qualificationDelete} className={STYLES.formButton}>{ICONS.delete}</button> */}
             <form onSubmit={handleActivity} id={"activityForm"}>
                 <lable>Add Activity:</lable><input name={"activity"} className={STYLES.input}/><button type="submit" className={STYLES.submitButton} >{ICONS.add}</button>
@@ -335,6 +369,16 @@ const Qualification = ({qual, skills, applicationId}) => {
                     linkedSkill.map(({skill, id})=>(
                         <li>
                             {skill}
+                        </li>
+                    )):
+                    <></>
+                }
+            </ul>
+            <ul className={"secondary"}>
+                {Array.isArray(linkedActivity)?
+                    linkedActivity.map(({activity, id})=>(
+                        <li id={id}>
+                            {activity}
                         </li>
                     )):
                     <></>

@@ -7,42 +7,55 @@ import { ICONS } from "../data/iconClasses";
 import { STYLES } from "../data/styleClasses";
 import { ENDPOINTS } from "../data/endpoints";
 
-// /template/:id/:jobid
-// const ENDPOINTS = {
-//     getJob: "/job/read",
-//     getLinkedActivities: "/activity/read",
-//     linkActivity:"/activity/add",
-//     unlinkActivity:"/activity/delete",
-//     update:"/activity/update"
+// URL: /job/:id
 
-// }
+const INPUTFORMFIELDS = [
+    {
+        field:"activity",
+        type:"text",
+        label:"Activity:",
+        autocomplete:false}
+]
+
 
 export const JobTemplate = () => {
     const navigate = useNavigate();
-    const {id, jobId} = useParams();
+    const {id} = useParams();
     const api = useFetch();
     const [pageData, setPageData] = useState({});
     const [activities, setActivities] = useState([]);
     const formRef = useRef(null);
+    
+    const JOB = {
+        endpoint:ENDPOINTS.Jobs,
+        filterCriteria:[
+            ["id",id]
+        ]
+    }
+    const ACTIVITIES = {
+        endpoint:ENDPOINTS.Activities,
+        // filterCriteria:[
+        //     ['jobId',id]
+        // ]
+    }
+
     // const activityForm = useForm(formRef.current);
     // console.log(id,jobId);
    
     const initialize = async () => {
         
-        const {data:apiTemplate, status:status_template} = await api.execute({
-            endpoint:ENDPOINTS.getJob, 
-            criteria:[[criterion("id", "=", jobId)]]
-        });
-
-        const {data:apiActivities, res, status:status_jobs} = await api.execute({
-            endpoint:ENDPOINTS.getLinkedActivities, 
-            // ordered:[orderBy("end", false), orderBy("start", false)], 
-            criteria:[[criterion("jobId", "=", jobId)]]
-        });
+        const [
+            {data:apiTemplate},
+            {data:apiActivities}
+        ] = await Promise.all([
+            api.apiGet(JOB),
+            api.apiGet(ACTIVITIES)
+        ])
         
         setPageData(()=>(apiTemplate[0]));
         setActivities(()=>(apiActivities));
         console.log(apiTemplate[0]);
+        console.log(apiActivities);
     }
 
     useEffect(()=>{
@@ -51,17 +64,34 @@ export const JobTemplate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const inputs = new FormData(formRef.current);
-        inputs.append(":jobId",jobId);
+        const inputs = new FormData(e.target);
+        // inputs.append("jobId",id);
+        const apiOptions = {
+            endpoint:ENDPOINTS.Activities,
+            newValues:[createFormObject(inputs)],
+        }
+        const {data,status} = await api.apiInsert(apiOptions);
+        console.log(data);
+        const linkOptions = {
+            endpoint:ENDPOINTS.LinkActivityToJob,
+            newValues:[
+                {
+                    jobId:id,
+                    activityId:data[0].ID
+                }
+            ]
+        }
+        const {data:link} = await api.apiInsert(linkOptions);
 
+        console.log(link);
         // console.log(activityForm.createFormObject(inputs));
-        const {data, res, status} = await api.execute({endpoint:ENDPOINTS.linkActivity, inputs:createFormObject(inputs)});
-        if (status==200 && parseInt(data.ID)>0){
+        // const {data, res, status} = await api.execute({endpoint:ENDPOINTS.linkActivity, inputs:createFormObject(inputs)});
+        // if (status==200 && parseInt(data.ID)>0){
             formRef.current.reset();
             initialize();
-            return
-        };
-        window.alert(`There was an error: ${res}`);
+            // return
+        // };
+        // window.alert(`There was an error: ${res}`);
         
     }
 
@@ -77,12 +107,19 @@ export const JobTemplate = () => {
             <h1>Job Template: {pageData.title}</h1>
             <button onClick={backToResume}>Back to resume...</button>
             
+            
             <form onSubmit={handleSubmit} className={STYLES.form} ref={formRef} id={"job"}>
-                {/* <label htmlFor={":title"}>Title:</label><input className={"primary"} name=":title"/> */}
-                <div className="height-padding"><label htmlFor={":description"} >Description:</label><input className={STYLES.input} name=":description"/></div>
-                {/* <label htmlFor={":start"} >Start Date:</label><input type={"date"} className={"primary"} name=":start"/> */}
-                {/* <label htmlFor={":end"} >End Data:</label><input type={"date"} className={"primary"} name=":end"/> */}
-                <button className={"right block inline-margin rounded action height-padding"} onClick={handleSubmit}>{ICONS.add}</button>
+                {/* <label htmlFor={"title"}>Title:</label><input className={"primary"} name="title"/>
+                <div className="height-padding"><label htmlFor={"description"} >Description:</label><input className={STYLES.input} name="description"/></div>
+                <label htmlFor={"start"} >Start Date:</label><input type={"date"} className={"primary"} name="start"/>
+                <label htmlFor={"end"} >End Data:</label><input type={"date"} className={"primary"} name="end"/> */}
+
+                {INPUTFORMFIELDS.map(({label,type,field, autocomplete})=>(
+                    <>
+                    <label htmlFor={field}>{label}</label><input autocomplete={autocomplete? null:"off"} type={type} className={STYLES.input} name={field}/>
+                    </>
+                ))}
+                <button className={STYLES.submitButton} value={"submit"}>{ICONS.add}</button>
             </form>
             <ul>
                 {activities.map(
@@ -93,12 +130,9 @@ export const JobTemplate = () => {
     )
 }
 
+
+
 const Activity = ({updateData, activity}) => {
-    // const statusClass = {
-    //     active: "action",
-    //     disabled: "disabled",
-    //     inactive:"secondary"
-    // }
     
     const api = useFetch();
     const [classState,setClass] = useState(STYLES.inactive);
@@ -154,30 +188,8 @@ const Activity = ({updateData, activity}) => {
         
     }
     return (
-        <li className={`secondary ${classState}`}>
-            <form ref={formRef} id={"job"} onBlur={handleFocus}>
-                <textarea onChange={handleChange} disabled={disabled} className={`x-90 ${classState}`} name=":description" defaultValue={description}/>
-                <div className="height-spacing flex flex-around action">    
-                    <button className={STYLES.formButton} id={id} value={"delete"} onClick={handleDelete}>{ICONS.delete}</button>
-                    {active?
-                        <button className={STYLES.formButton} id={id} value={"save"} onClick={handleSave}>{ICONS.save}</button> :    
-                        <button className={STYLES.formButton} id={id} value={"edit"} onClick={handleEdit}>{ICONS.edit}</button>
-                    }
-                </div>
-                {/* <label htmlFor={":title"}>Title:</label> */}
-                {/* <input onChange={handleChange} disabled={disabled} className={`block ${classState}`} name=":title" defaultValue={title}/> */}
-                {/* <label htmlFor={":description"} >Description:</label> */}
-                {/* <label htmlFor={":start"} >Start Date:</label> */}
-                {/* <input onChange={handleChange} disabled={disabled} className={`x-30 ${classState}`} name=":start" defaultValue={start} type={"date"}/> */}
-                {/* <label htmlFor={":end"} >End Data:</label> */}
-                {/* <span> to </span> */}
-                {/* <input onChange={handleChange} disabled={disabled} className={`x-30 ${classState}`} name=":end" defaultValue={end} type={"date"}/> */}
-                
-                {/* <button className={"block"} id={id} value={"add"} onClick={handleAdd}><i className={ICONS.add}></i></button> */}
-                
-                
-                
-            </form>
-        </li>
+            <li>
+                {activity.activity}
+            </li>
     )
 }
