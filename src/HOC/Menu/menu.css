@@ -1,0 +1,91 @@
+header {
+    overflow: hidden;
+}
+nav {
+    overflow: hidden;
+    /* background-color: transparent; */
+    /* animation: menu .3s 1 forwards; */
+}
+.menu-container {
+    animation: menu .3s 1 forwards;
+    border-radius: 0% 0% 5% 5%;
+    /* border-bottom-left-radius: 5%; */
+    /* border-bottom-right-radius: 5%; */
+}
+
+.nav-item {
+    transition: all 2s;
+}
+.nav-item.header::after {
+    display: inline-block;
+    content: '>';
+    /* animation: rotate .25s 1 backwards ; */
+}
+.nav-item.header.expanded::after {
+    animation: rotate .25s 1 forwards ;
+}
+
+.nav-item.header.closed::after {
+    /* content: ">"; */
+    /* background-color: green; */
+    /* animation: forwards back 2s; */
+    animation: back .25s 1 backwards ;
+
+}
+
+ul.sub {
+    overflow: hidden;
+    margin-left: 10px;
+    width: 100%;
+}
+.sub>li {
+    
+    animation: expand .5s 1 forwards;
+    /* transition: all 1s ease-in-out; */
+    /* transform:scaleX(2); */
+}
+@keyframes expand {
+    0% {
+        transform: translateY(-200%);
+    }
+
+    70% {
+        transform: translateY(20%);
+    }
+    100% {
+        transform: translateY(0)
+    }
+    
+}
+@keyframes menu {
+    0% {
+        transform: translateY(-200%);
+    }
+
+    100% {
+        transform: translateY(0%)
+    }
+    
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: translate(25%,12%) rotate(90deg);
+    }
+}
+
+@keyframes back {
+    0% {
+        transform: translate(25%,12%) rotate(90deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.o-hidden {
+    overflow: hidden;
+}

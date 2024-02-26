@@ -1,32 +1,42 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ICONS } from "../data/iconClasses";
 import { PAGES, env } from "../data/pages";
+import { Menu } from "../HOC/Menu/menu";
+import { click } from "@testing-library/user-event/dist/click";
 
 export const Header = () => {
     const [expanded, setExpanded] = useState(false);
     const environment = env[process.env.NODE_ENV];
-      
-    const expand =(e) => {
+    const headerRef = useRef(null);
+    const expand =() => {
         setExpanded(!expanded);
     }
 
     const loseFocus = (e) => {
-        if(expanded && !e.currentTarget.contains(e.relatedTarget)) {expand(e)};
+        console.log('click')
+        if(expanded && !headerRef.current.contains(e.target)) {
+            expand()
+        };
     }
 
+    useEffect( (e)=>{    
+        document.addEventListener('click', loseFocus);
+        
+        return ()=> {
+            document.removeEventListener('click',loseFocus);
+        }
+    },[])
+
     return (
-        <header onBlur={loseFocus}> {expanded? <button className="inline-margin block" onClick={expand}>{ICONS.close}</button> :
-                    <button className="height-spacing inline-margin block" onClick={expand}>{ICONS.action}</button>}
-                        
-            <nav className="base" >
-                {expanded? 
-                <ul className="floating block height-padding secondary">
-                    
-                    {PAGES.filter(page=>page.environment>=[environment] && page.type==0).map(navLink => (
-                        <li className="block inline-margin height-padding"><a href={navLink.path}>{navLink.text}</a></li>
-                    ))}
-                </ul> : <></>}
-            </nav>
+        <header className={"secondary o-hidden"} ref={headerRef} onBlur={loseFocus} onClick={loseFocus}> 
+        {expanded? 
+            <>
+            <button className="height-spacing inline-margin block" onClick={expand}>{ICONS.close}</button>
+            <Menu links={PAGES.filter(page=>page.environment>=[environment] && page.type!=1)}/> 
+            </>:
+            <button className="height-spacing inline-margin block" onClick={expand}>{ICONS.action}</button>
+        }
+        
         </header>
     )
 }
