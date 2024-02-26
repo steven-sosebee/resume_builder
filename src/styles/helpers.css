@@ -16,6 +16,9 @@
 .flex-around {
     justify-content: space-evenly;
 }
+.flex-stretched {
+    justify-content: space-between;
+}
 .flex-grow {
     flex-grow: 1;
 }
@@ -55,7 +58,9 @@
 .bottom {
     bottom: 0;
 }
-
+.top {
+    top:0;
+}
 .floating {
     position: absolute;
     /* position: relative; */
@@ -123,4 +128,8 @@
 
 .hidden {
     visibility: hidden;
+}
+
+.scroll {
+    overflow-y: scroll;
 }

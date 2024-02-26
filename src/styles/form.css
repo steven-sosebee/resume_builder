@@ -1,7 +1,7 @@
 .dialog[open]{
-    height: fit-content;
-    background-color: var(--primary-color);
-    top:30%;
+    /* height: fit-content; */
+    /* background-color: var(--primary-color);
+    top:10%; */
 }
 
 .btn-form {

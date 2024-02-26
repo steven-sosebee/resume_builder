@@ -1,0 +1,9 @@
+@media print {
+    /* Print-specific styles */
+    body {
+      font-size: 12pt;
+    }
+    .hide-on-print {
+      display: none;
+    }
+  }

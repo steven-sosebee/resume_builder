@@ -39,8 +39,7 @@
 dialog {
     /* width: 0;
     height: 0; */
-    position:fixed;
-    top: 50px;
+    
     margin-inline:auto;
     transition: 5s;
     opacity: 0;
@@ -49,10 +48,14 @@ dialog {
 }
 
 dialog[open] {
+    /* position:fixed; */
+    background-color: var(--primary-color);
+    top:10%;
     width: 90%;
-    height:90%;
+    max-height:70%;
     opacity: 1;
     animation: fadeIn .25s normal forwards;   
+    /* overflow-y: hidden; */
 }
 
 dialog.fade[open] {
@@ -65,5 +68,3 @@ dialog::backdrop {
     transition: 2s;
     background-color: rgba(50, 75, 100, .8);
 }
-
-
